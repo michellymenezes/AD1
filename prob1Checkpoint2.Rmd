@@ -1,6 +1,5 @@
 ---
 title: "Problema 1 - Checkpoint 2"
-author: "Martha Michelly G. Menezes"
 output:
   html_document:
     theme: readable
