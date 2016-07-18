@@ -1,0 +1,51 @@
+---
+title: "Problema 1 - Checkpoint 4"
+output: 
+  html_document:
+    theme: readable
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Despesa de parlamentares
+
+Os parlamentares brasileiros são beneficiados por um serviço em que estes são reembolsados por despesas relacionadas a exerção de seus trabalhos. Essas despesas são categorizadas em diferentes tipos e, para cada uma delas, são registrados dados como valor, data, empresa fornecedora do serviço, beneficiado, partido e estado em que o mesmo foi eleito.
+
+O objetivo deste documento é estudar alguns desses dados e visualizá-los de diferentes pontos de vista e representações gráficas para uma melhor interpretações.
+
+### Hospedagem e passagens aéreas no DF
+
+Deputados que foram eleitos no DF supostamente não deveriam possuir tantos gastos relacionados a hospedagem e passagens aéreas quando comparados com os demais. **Como se apresenta essa comparação quando realizada?** Para visualizá-la, vamos construir um gráfico que relacione duas variáveis: deputados agrupados por estado e gastos relacionados a serviços de hospedagem e emissão de bilhetes aéreos.
+
+
+
+```{r}
+require(ggplot2)
+
+gastos <- read.table("ano-atual.csv", sep = ",", header = T, stringsAsFactors=FALSE)
+despesaHospedagem <- subset(gastos, txtDescricao == "HOSPEDAGEM ,EXCETO DO PARLAMENTAR NO DISTRITO FEDERAL.")
+despesaAerea <- subset(gastos, txtDescricao == "Emissão Bilhete Aéreo")
+
+ggplot(despesaHospedagem, aes(sgUF, fill=sgUF == "DF")) + labs(title="Gastos com hospedagem", x="Estados", y="Frequência de gastos") + geom_bar() + guides(fill=FALSE)+ coord_flip()
+
+ggplot(despesaAerea, aes(sgUF, fill=sgUF == "DF")) + labs(title="Gastos com emissão de bilhete aéreo", x="Estados", y="Frequência de gastos") + geom_bar() + guides(fill=FALSE)+ coord_flip()
+```
+
+É possível notar que, em ambos os gráficos, existem despesas efetuadas parlamentares do DF. Porém, esse número se torna insignificante quando comparado com a quantidade de vezes que os outros estados utilizaram do mesmo serviço. Enquanto os valores relacionados aos DF se aproximam de zero, outros estados chegaram a gastar com hospedagem mais de 300 vezes e com bilhete aéreo quase 5 mil vezes.
+
+### Bilhete para terceiros e glosa
+
+Em alguns registros há a presença de uma *glosa*, que é quando parte do pagamento é negado e o parlamentar deve tirar do próprio bolso o complemento da despesa. Isso geralmente acontece quando há outros gastos envolvidos que não se encaixam no requisito de exercício de trabalho. Parlamentares podem solicitar o pagamento de bilhetes aéreos emitidos para outros passageiros, partindo dessa possibilidade, **existe alguma relação quando o bilhete aéreo é emitido para outra pessoa e a presença de glosa no pagamento dessa emissão?** No gráfico abaixo, podemos observar quais despesas com bilhetes aéreos de terceiros apresentaram glosa registrada. Os bilhetes aéreos com registro de algum valor de glosa devem aparecer em verde, caso contrário, em azul.
+
+```{r}
+despesaTerceiros <- subset(despesaAerea, txtPassageiro != txNomeParlamentar)
+
+ggplot(despesaTerceiros, aes(txtDescricao, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaTerceiros$vlrGlosa > 0,'seagreen4','slateblue4')) + labs(title="Bilhetes aéreos e glosa", y="Valor do bilhete")
+median(despesaTerceiros$vlrLiquido)
+```
+
+Surpreendentemente, em nenhuma das despesas efetuadas para terceiros houve o registro de uma glosa com valor acima de zero reais, tornando essa relação inexistente. É possível fazer mais observações sobre o gráfico. Bilhetes com valores negativos são referentes aos emitidos que não foram utilizados. Os gastos se concentram entre zero e 1,500 reais, tendo mediana igual a 470.76, seu valor mais frequente. Extremos de quase -3,000 até quase 6,000 são atingidos.
