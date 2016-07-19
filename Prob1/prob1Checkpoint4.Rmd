@@ -37,15 +37,66 @@ ggplot(despesaAerea, aes(sgUF, fill=sgUF == "DF")) + labs(title="Gastos com emis
 
 É possível notar que, em ambos os gráficos, existem despesas efetuadas parlamentares do DF. Porém, esse número se torna insignificante quando comparado com a quantidade de vezes que os outros estados utilizaram do mesmo serviço. Enquanto os valores relacionados aos DF se aproximam de zero, outros estados chegaram a gastar com hospedagem mais de 300 vezes e com bilhete aéreo quase 5 mil vezes.
 
-### Bilhete para terceiros e glosa
+Para uma análise mais sólida, visualizaremos os mesmos grupos de estados, mas agora comparando os valores gastos em cada despesa registrada.
+
+```{r}
+ggplot(despesaHospedagem, aes(sgUF, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaHospedagem$sgUF == "DF",'darkturquoise','coral1')) + labs(title="Gastos com hospedagem do bilhete", x= "Estado", y="Valor da hospedagem em R$") + coord_flip()
+
+median(despesaHospedagem$vlrLiquido)
+
+ggplot(despesaAerea, aes(sgUF, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaAerea$sgUF == "DF",'darkturquoise','coral1')) + labs(title="Gastos com emissão de bilhete aéreo",x= "Estado", y="Valor do bilhete em R$") + coord_flip()
+
+median(despesaAerea$vlrLiquido)
+
+```
+Nos gráficos existe uma faixa de valores mais frequentes e de maior concentração e outros extremos que fogem do padrão, como um que ultrapassa os R$ 5,000.00 em hospedagem ou outro que ultrapassa os R$ 6,000.00 em bilhete aéreo. Calculando a mediana podemos ver o valor mais presentes entres os custos em cada gráfico. Observando os pontos plotados, é possível visualizar que os poucos valores relacionados ao DF também pertencem as áreas em que estão presentes os valores mais frequentes em ambos os gráficos, que são: valores próximos a R$ 226.86 para hospedagem e próximos a R$ 396.68 para bilhetes aéreos.
+
+Desta breve exploração de dados podemos concluir que existem valores registrados em hospedagem e emissão de bilhetes aéreos relacionados ao DF. Porém, em quantidade, esses a frequência é mínima e praticamente insignificante. Em valores, nenhum deles é considerado absurdo e estão dentro do padrão gasto nessas categirias.
+
+### Glosa e emissão de bilhetes
 
 Em alguns registros há a presença de uma *glosa*, que é quando parte do pagamento é negado e o parlamentar deve tirar do próprio bolso o complemento da despesa. Isso geralmente acontece quando há outros gastos envolvidos que não se encaixam no requisito de exercício de trabalho. Parlamentares podem solicitar o pagamento de bilhetes aéreos emitidos para outros passageiros, partindo dessa possibilidade, **existe alguma relação quando o bilhete aéreo é emitido para outra pessoa e a presença de glosa no pagamento dessa emissão?** No gráfico abaixo, podemos observar quais despesas com bilhetes aéreos de terceiros apresentaram glosa registrada. Os bilhetes aéreos com registro de algum valor de glosa devem aparecer em verde, caso contrário, em azul.
 
 ```{r}
 despesaTerceiros <- subset(despesaAerea, txtPassageiro != txNomeParlamentar)
 
-ggplot(despesaTerceiros, aes(txtDescricao, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaTerceiros$vlrGlosa > 0,'seagreen4','slateblue4')) + labs(title="Bilhetes aéreos e glosa", y="Valor do bilhete")
+ggplot(despesaTerceiros, aes(vlrGlosa, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaTerceiros$vlrGlosa > 0,'seagreen4','slateblue4')) + labs(title="Bilhetes aéreos e glosa de terceiros",x= "Glosa", y="Valor do bilhete em R$")
 median(despesaTerceiros$vlrLiquido)
 ```
 
 Surpreendentemente, em nenhuma das despesas efetuadas para terceiros houve o registro de uma glosa com valor acima de zero reais, tornando essa relação inexistente. É possível fazer mais observações sobre o gráfico. Bilhetes com valores negativos são referentes aos emitidos que não foram utilizados. Os gastos se concentram entre zero e 1,500 reais, tendo mediana igual a 470.76, seu valor mais frequente. Extremos de quase -3,000 até quase 6,000 são atingidos.
+
+Se fizermos a mesma análise englobando todos os bilhetes aéreos emitidos temos o seguinte resultado:
+
+```{r}
+ggplot(despesaAerea, aes(vlrGlosa, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaAerea$vlrGlosa > 0,'maroon4','slateblue4')) + labs(title="Bilhetes aéreos e glosa globais", x= "Glosa", y="Valor do bilhete em R$")
+median(despesaAerea$vlrLiquido)
+```
+
+Assim como a amostra anterior, nesta também não presença de glosa registrada. Em outras palavras, em todos os bilhetes aéreos emitidos e registrados, não há valor referente a glosa em nenhum deles.
+
+Não é possível dizer muito além do que já foi mencionado acima. É possível que todas essas despesas tenham sido necessárias para o cumprimento do trabalho dos parlamentares, mas estamos interessados em investigar um pouco mais e é isso que nos leva para os próximos questionamentos.
+
+### Trechos de bilhetes aéreos
+
+```{r}
+ggplot(despesaAerea, aes(txtDescricao, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(!grepl("BSB", despesaAerea$txtTrecho),'deeppink','thistle')) + labs(title="Bilhetes aéreos de trechos além de BSB", x="", y="Valor do bilhete em R$")
+
+ggplot(despesaAerea, aes(txtDescricao, fill=grepl("BSB", despesaAerea$txtTrecho))) + labs(title="Emissão de bilhetes aéreos", x="", y="Frequência de emissão de blihetes aéreos") + geom_bar(position="dodge") + guides(fill=guide_legend(title = "BSB está incluso no trecho"))  +  scale_fill_manual(values=c("deeppink", "thistle"))
+
+ggplot(despesaTerceiros, aes(txtDescricao, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(!grepl("BSB", despesaTerceiros$txtTrecho),'deeppink','thistle')) + labs(title="Bilhetes aéreos de trechos além de BSB para terceiros", x= "", y="Valor do bilhete em R$")
+
+ggplot(despesaTerceiros, aes(txtDescricao, fill=grepl("BSB", despesaTerceiros$txtTrecho))) + labs(title="Frequência de terceiros em bilhetes aéreos", x="", y="Frequência de gastos") + geom_bar(position="dodge") + guides(fill=guide_legend(title = "BSB está incluso no trecho"))  +  scale_fill_manual(values=c("deeppink", "thistle"))
+
+
+
+despesaNoBSB <- subset(despesaAerea, !grepl("BSB", despesaTerceiros$txtTrecho))
+despesaBSBOnly <- subset(despesaAerea, grepl("BSB", despesaTerceiros$txtTrecho))
+
+ggplot(despesaNoBSB, aes(numMes, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaNoBSB$txtPassageiro != despesaNoBSB$txNomeParlamentar,'darkolivegreen2','mediumorchid4')) + labs(title="Bilhetes aéreos de trechos além de BSB", x= "Mês", y="Valor do bilhete em R$")
+
+ggplot(despesaNoBSB, aes(numMes, fill=(despesaNoBSB$txtPassageiro != despesaNoBSB$txNomeParlamentar))) + labs(title="Frequencia bilhetes aéreos que não incluem BSB por mês",x= "Mês", y="Frequência de emissão de blihetes aéreos") + geom_bar(position="dodge") + guides(fill=guide_legend(title = "Passageiro é um terceiro beneficiado")) +  scale_fill_manual(values=c("mediumorchid4", "darkolivegreen2"))
+
+ggplot(despesaBSBOnly, aes(numMes, fill=(despesaBSBOnly$txtPassageiro != despesaBSBOnly$txNomeParlamentar))) + labs(title="Frequencia bilhetes aéreos que incluem BSB por mês",x = "Mês", y="Frequência de emissão de blihetes aéreos") + geom_bar(position="dodge") + guides(fill=guide_legend(title = "Passageiro é um terceiro beneficiado")) +  scale_fill_manual(values=c("mediumorchid4", "darkolivegreen2"))
+```
+
