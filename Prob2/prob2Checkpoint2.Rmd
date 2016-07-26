@@ -1,0 +1,24 @@
+---
+title: "Problema 2 - Checkpoint 2"
+output: 
+  html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE}
+require(ggplot2)
+
+gastos <- read.table("ano-atual.csv", sep = ",", header = T, stringsAsFactors=FALSE)
+despesaAerea <- subset(gastos, txtDescricao == "Emissão Bilhete Aéreo")
+despesaTerceiros <- subset(despesaAerea, txtPassageiro != txNomeParlamentar)
+
+despesaNoBSB <- subset(despesaAerea, !grepl("BSB", despesaTerceiros$txtTrecho))
+
+despesaBSBOnly <- subset(despesaAerea, grepl("BSB", despesaTerceiros$txtTrecho))
+
+ggplot(despesaNoBSB, aes(numMes, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaNoBSB$txtPassageiro != despesaNoBSB$txNomeParlamentar,'darkolivegreen2','mediumorchid4')) + labs(title="Bilhetes aéreos de trechos além de BSB", x= "Mês", y="Valor do bilhete em R$")
+
+```
