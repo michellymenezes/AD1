@@ -15,10 +15,12 @@ gastos <- read.table("ano-atual.csv", sep = ",", header = T, stringsAsFactors=FA
 despesaAerea <- subset(gastos, txtDescricao == "Emissão Bilhete Aéreo")
 despesaTerceiros <- subset(despesaAerea, txtPassageiro != txNomeParlamentar)
 
-despesaNoBSB <- subset(despesaAerea, !grepl("BSB", despesaTerceiros$txtTrecho))
+despesaNoBSB <- subset(despesaAerea, !grepl("BSB", txtTrecho))
+despesaNoBSB <- subset(despesaNoBSB, vlrDocumento > 0)
 
-despesaBSBOnly <- subset(despesaAerea, grepl("BSB", despesaTerceiros$txtTrecho))
+despesaNoBSB$txtPassageiro[despesaNoBSB$txtPassageiro != despesaNoBSB$txNomeParlamentar] <- "Outro"
+despesaNoBSB$txtPassageiro[despesaNoBSB$txtPassageiro == despesaNoBSB$txNomeParlamentar] <- "Parlamentar"
 
-ggplot(despesaNoBSB, aes(numMes, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaNoBSB$txtPassageiro != despesaNoBSB$txNomeParlamentar,'darkolivegreen2','mediumorchid4')) + labs(title="Bilhetes aéreos de trechos além de BSB", x= "Mês", y="Valor do bilhete em R$")
+ggplot(despesaNoBSB, aes(numMes, vlrLiquido)) +  geom_point(position = position_jitter(width = .8), alpha = .3, colour=ifelse(despesaNoBSB$txtPassageiro == 'Outro','orange','mediumorchid4')) + labs(title="Bilhetes aéreos de trechos além de BSB", x= "Mês", y="Valor do bilhete em R$")
 
 ```
