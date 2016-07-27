@@ -9,7 +9,9 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+## Bilhetes aéreos emitidos para trechos além de BSB
 
+O gráfico abaixo resume como se concentram e estão distribuídos os valores relacionados a emissão de blihetes aéreos com trechos além de BSB (Brasília). Para cada mês, podemos observar suas respectivas distribuições para duas categorias diferentes: quando o passageiro é o próprio parlamentar e quando é uma terceira pessoa. Ao fim da análise o leitor pode concluir que os valores de todos os bilhetes se concentram mais entre 0-1000 reais, a frequência de emissão de bilhetes para parlamentares é maior que para terceiros em todos os meses, pois a macha roxa é maior e mais escura que a laranja e que existem pontos com valores fora do padrão em que, em sua maior parte, foram de bilhetes para parlamentares. 
 ```{r, echo=FALSE}
 require(ggplot2)
 
@@ -29,6 +31,8 @@ despesaNoBSB$numMes[despesaNoBSB$numMes==3] <- "03 - Março"
 despesaNoBSB$numMes[despesaNoBSB$numMes==4] <- "04 - Abril"
 despesaNoBSB$numMes[despesaNoBSB$numMes==5] <- "05 - Maio"
 
-ggplot(despesaNoBSB, aes(txtPassageiro, vlrLiquido, color=txtPassageiro)) +  geom_point(position = position_jitter(width = .8), alpha = .3) + scale_color_manual(values = c("Parlamentar" = 'mediumorchid4','Terceiro' = 'orange')) + labs(title="Bilhetes aéreos de trechos além de BSB", x= "Mês", y="Valor do bilhete em R$", colour="Tipo de passageiro") + facet_grid(. ~
+ggplot(despesaNoBSB, aes(txtPassageiro, vlrLiquido, color=txtPassageiro)) +  geom_point(position = position_jitter(width = .8), alpha = .3) +  scale_color_manual(values = c("Parlamentar" = 'mediumorchid4','Terceiro' = 'orange')) + labs(title="Bilhetes aéreos de trechos além de BSB", x= "Mês", y="Valor do bilhete em R$", colour="Tipo de passageiro") + facet_grid(. ~
     numMes, scales = "free", space = "free")
 ```
+
+Para facilitar leitura foram feitas algumas mudanças. As categorias de passageiros que antes estavam sobrepostas foram separadas para uma melhor análise individual e comparação. Os valores negativos foram removidos da visualização, o intuito é somente ter valores que foram realmente gastos. Legendas foram adicionadas e uma mudança nas cores foi realizada para melhor compreensão das variáves. O tamanho do gráfico foi aumentado com a intenção de melhorar a visualização já que houve um maior espalhamento dos pontos plotados.
