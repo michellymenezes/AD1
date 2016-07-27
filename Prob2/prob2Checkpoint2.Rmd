@@ -31,13 +31,4 @@ despesaNoBSB$numMes[despesaNoBSB$numMes==5] <- "05 - Maio"
 
 ggplot(despesaNoBSB, aes(txtPassageiro, vlrLiquido, color=txtPassageiro)) +  geom_point(position = position_jitter(width = .8), alpha = .3) + scale_color_manual(values = c("Parlamentar" = 'mediumorchid4','Terceiro' = 'orange')) + labs(title="Bilhetes aéreos de trechos além de BSB", x= "Mês", y="Valor do bilhete em R$", colour="Tipo de passageiro") + facet_grid(. ~
     numMes, scales = "free", space = "free")
-
-despesaNoBSB$numMes[despesaNoBSB$numMes==1 & despesaNoBSB$txtPassageiro=="Terceiro"] <- "1 "
-despesaNoBSB$numMes[despesaNoBSB$numMes==2 & despesaNoBSB$txtPassageiro=="Terceiro"] <- "2 "
-despesaNoBSB$numMes[despesaNoBSB$numMes==3 & despesaNoBSB$txtPassageiro=="Terceiro"] <- "3 "
-despesaNoBSB$numMes[despesaNoBSB$numMes==4 & despesaNoBSB$txtPassageiro=="Terceiro"] <- "4 "
-despesaNoBSB$numMes[despesaNoBSB$numMes==5 & despesaNoBSB$txtPassageiro=="Terceiro"] <- "5 "
-
-ggplot(despesaNoBSB, aes(numMes, vlrLiquido, color=txtPassageiro)) +  geom_point(position = position_jitter(width = .8), alpha = .3) + scale_color_manual(values = c("Parlamentar" = 'mediumorchid4','Terceiro' = 'orange')) + labs(title="Bilhetes aéreos de trechos além de BSB", x= "Mês", y="Valor do bilhete em R$", colour="Tipo de passageiro") 
-
 ```
