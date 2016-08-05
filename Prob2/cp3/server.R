@@ -18,8 +18,8 @@ data <- subset(data,!grepl("BSB", data$txtTrecho))
 data$datEmissao <- substr(data$datEmissao,1,10)
 data$datEmissao <- as.Date(data$datEmissao)
 
-data$txtPassageiro[data$txtPassageiro != data$txNomeParlamentar] <- FALSE
-data$txtPassageiro[data$txtPassageiro == data$txNomeParlamentar] <- TRUE
+data$txtPassageiro[data$txtPassageiro != data$txNomeParlamentar] <- "Terceiro"
+data$txtPassageiro[data$txtPassageiro == data$txNomeParlamentar] <- "Parlamentar"
 
 #data$txtTrecho[!grepl("BSB", data$txtTrecho)] <- FALSE
 #data$txtTrecho[grepl("BSB", data$txtTrecho)] <- TRUE
@@ -29,27 +29,63 @@ setnames(data, old=c("vlrDocumento","datEmissao"), new=c("Valor", "Data"))
 shinyServer(function(input, output) {
   output$plot <- renderPlotly({
     setData <- subset(data, Data >= input$dates[1] & Data <= input$dates[2])
+
+    if(input$radio2 == 1){
+      setData <- subset(data, Data >= input$dates[1] & Data <= input$dates[2])
+      setData <- subset(setData, txtPassageiro == "Parlamentar")
+      
       if(input$radio==2){
-        setData <- subset(data, Data >= input$dates[1] & Data <= input$dates[2])
-        if(nrow(subset(data, grepl(input$dpt_name, setData$txNomeParlamentar))) > 0){
-          setData <- subset(setData, grepl(input$dpt_name, setData$txNomeParlamentar))
+        if(nrow(subset(data, grepl(input$select1, setData$txNomeParlamentar))) > 0){
+          setData <- subset(setData, grepl(input$select1, setData$txNomeParlamentar))
         }
       }
       else if(input$radio==3){
-        setData <- subset(data, Data >= input$dates[1] & Data <= input$dates[2])
-        if(nrow(subset(data, grepl(input$par_name, setData$sgPartido))) > 0){
-          setData <- subset(setData, grepl(input$par_name, setData$sgPartido))
+        if(nrow(subset(data, grepl(input$select2, setData$sgPartido))) > 0){
+          setData <- subset(setData, grepl(input$select2, setData$sgPartido))
         }
       }
-      else if(input$radio==1){
-        setData <- subset(data, Data >= input$dates[1] & Data <= input$dates[2])
-        
+    }
+    
+    else if (input$radio2 == 2){
+      setData <- subset(data, Data >= input$dates[1] & Data <= input$dates[2])
+      setData <- subset(setData, txtPassageiro != "Parlamentar")
+      
+      if(input$radio==2){
+        if(nrow(subset(data, grepl(input$select1, setData$txNomeParlamentar))) > 0){
+          setData <- subset(setData, grepl(input$select1, setData$txNomeParlamentar))
+        }
       }
+      else if(input$radio==3){
+        if(nrow(subset(data, grepl(input$select2, setData$sgPartido))) > 0){
+          setData <- subset(setData, grepl(input$select2, setData$sgPartido))
+        }
+      }
+    }
+    
+    else if (input$radio2 == 3){
+      setData <- subset(data, Data >= input$dates[1] & Data <= input$dates[2])
+      if(input$radio==2){
+        if(nrow(subset(data, grepl(input$select1, setData$txNomeParlamentar))) > 0){
+          setData <- subset(setData, grepl(input$select1, setData$txNomeParlamentar))
+        }
+      }
+      else if(input$radio==3){
+        if(nrow(subset(data, grepl(input$select2, setData$sgPartido))) > 0){
+          setData <- subset(setData, grepl(input$select2, setData$sgPartido))
+        }
+      }
+    }
+    
+    if(nrow(setData)==0){
+      setData <- data
+    }
+    
+    
   
     p = ggplot( setData, aes(Data, Valor, color= txtPassageiro, text = paste("Nome:", txNomeParlamentar,"<br>Trecho:", txtTrecho, "<br>Partido:", sgPartido))) + 
-      geom_point(alpha = .4) +
+      geom_point(position = position_jitter(width = .1), alpha = .4) +
       ylab("Valor do bilhete emitido") + 
-      xlab("Data de emissão do bilhete") + scale_x_date()
+      xlab("Data de emissão do bilhete") + guides(fill=guide_legend(title = "Passageiro é um terceiro beneficiado"))+ scale_x_date()
 
    (gg <- ggplotly(p))
     
