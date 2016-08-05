@@ -36,3 +36,33 @@ ggplot(despesaNoBSB, aes(txtPassageiro, vlrLiquido, color=txtPassageiro)) +  geo
 ```
 
 Para facilitar leitura foram feitas algumas mudanças. As categorias de passageiros que antes estavam sobrepostas foram separadas para uma melhor análise individual e comparação. Os valores negativos foram removidos da visualização, o intuito é somente ter valores que foram realmente gastos. Legendas foram adicionadas e uma mudança nas cores foi realizada para melhor compreensão das variáves. O tamanho do gráfico foi aumentado com a intenção de melhorar a visualização já que houve um maior espalhamento dos pontos plotados.
+
+```{r}
+library(shiny)
+library(dplyr, warn.conflicts = F)
+library(readr)
+library(ggplot2)
+library(plotly)
+theme_set(theme_bw())
+
+data <- read.table("ano-atual.csv", sep = ",", header = T, stringsAsFactors=FALSE)
+data <- subset(data, txtDescricao == "Emissão Bilhete Aéreo")
+data <- subset(data, vlrDocumento > 0)
+
+data$datEmissao <- substr(data$datEmissao,1,10)
+
+data$txtPassageiro[data$txtPassageiro != data$txNomeParlamentar] <- FALSE
+data$txtPassageiro[data$txtPassageiro == data$txNomeParlamentar] <- TRUE
+
+data$txtTrecho[!grepl("BSB", data$txtTrecho)] <- FALSE
+data$txtTrecho[grepl("BSB", data$txtTrecho)] <- TRUE
+
+p = ggplot( data,
+                   aes(datEmissao, vlrDocumento)) + 
+      geom_point(position = position_jitter(width = .5), 
+                 alpha = .4) +
+      ylab("Médio gasto por bilhete (R$)") + 
+      xlab("Quantidade de bilhetes emitidos")
+    
+   (gg <- ggplotly(p))
+```

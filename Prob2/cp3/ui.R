@@ -1,4 +1,5 @@
 library(shiny)
+library(plotly)
 
 shinyUI(fluidPage(
   titlePanel("Checkpoint 3"),
@@ -12,7 +13,7 @@ shinyUI(fluidPage(
       dateRangeInput("dates", 
         "Intervalo de data",
         start = "2016-01-01", 
-        end = as.character(Sys.Date())),
+        end = "2016-05-31"),
       
       br(),
 
@@ -27,6 +28,6 @@ shinyUI(fluidPage(
         textInput("par_name", "Nome do partido", "PT"))),
     
     
-    mainPanel(plotOutput("plot"))
+    mainPanel(plotlyOutput("plot"))
   )
 ))
