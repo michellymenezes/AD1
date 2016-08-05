@@ -10,9 +10,9 @@ shinyUI(fluidPage(
   titlePanel("Checkpoint 3"),
   
   sidebarLayout(
-    sidebarPanel(
+    sidebarPanel(width = 3,
       helpText("Selecione um intervalo de data que deseja examinar.
-               Você também pode escolher um filtro para visualizar por um parlamentar ou partido político específico."),
+               Você também pode escolher um filtro para visualizar por um parlamentar, partido político ou tipo de passageiro específico. Se não houver nenhum dado a ser mostrado na data selecionada, o gráfico completo será exibido. Caso o intervalo de data especificado não possua os dados dos demais filtros que escolheu para mostrar, serão exibidos todos os bilhetes existentes para o mesmo intervalo."),
       br(),
           
       dateRangeInput("dates", 
@@ -38,6 +38,13 @@ shinyUI(fluidPage(
                     choices = unique(data$sgPartido)))),
     
     
-    mainPanel(plotlyOutput("plot"))
+    mainPanel(width = 9,
+              h2("Bilhetes Aéreos"),
+              br(),
+              p("No gráfico abaixo se encontram bilhetes aéreos emitidos por parlamentares em 2016, sendo estes pagos com dinheiro público. No gráfico, especificamente, estão aqueles em que Brasília não está inclusa no trecho do bilhete. Os eixos x e y representam a data da emissão e valor, respectivamente"),
+              p("Nem sempre os parlamentares são passageiros para bilhetes emitidos, em outras palavras, eles podem fazer a compra de um bilhete aéreo para uma terceira pessoa. É possível observar que alguns valores são extremamente altos comparados aos demais."),
+              p("Há muitos aspectos que podem ser observados. Você pode explorar o gráfico selecionando apenas os dados que lhe interessam. Cada ponto representa um bilhete, é possível obter mais detalhes sobre eles ao passar o mouse sobre. Ao selecionar uma área do gráfico, você poderá observar em detalhes a parte desejada."),
+              br(),
+              plotlyOutput("plot"))
   )
 ))

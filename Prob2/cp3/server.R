@@ -7,7 +7,6 @@ library(ggplot2)
 library(plotly)
 library(scales)
 library(data.table)
-theme_set(theme_bw())
 
 data <- read.table("data/ano-atual.csv", sep = ",", header = T, stringsAsFactors=FALSE)
 data <- subset(data, txtDescricao == "Emissão Bilhete Aéreo")
@@ -24,7 +23,7 @@ data$txtPassageiro[data$txtPassageiro == data$txNomeParlamentar] <- "Parlamentar
 #data$txtTrecho[!grepl("BSB", data$txtTrecho)] <- FALSE
 #data$txtTrecho[grepl("BSB", data$txtTrecho)] <- TRUE
 
-setnames(data, old=c("vlrDocumento","datEmissao"), new=c("Valor", "Data"))
+setnames(data, old=c("vlrDocumento","datEmissao", "txtPassageiro"), new=c("Valor", "Data", "Tipo"))
 
 shinyServer(function(input, output) {
   output$plot <- renderPlotly({
@@ -32,7 +31,7 @@ shinyServer(function(input, output) {
 
     if(input$radio2 == 1){
       setData <- subset(data, Data >= input$dates[1] & Data <= input$dates[2])
-      setData <- subset(setData, txtPassageiro == "Parlamentar")
+      setData <- subset(setData, Tipo == "Parlamentar")
       
       if(input$radio==2){
         if(nrow(subset(data, grepl(input$select1, setData$txNomeParlamentar))) > 0){
@@ -48,7 +47,7 @@ shinyServer(function(input, output) {
     
     else if (input$radio2 == 2){
       setData <- subset(data, Data >= input$dates[1] & Data <= input$dates[2])
-      setData <- subset(setData, txtPassageiro != "Parlamentar")
+      setData <- subset(setData, Tipo != "Parlamentar")
       
       if(input$radio==2){
         if(nrow(subset(data, grepl(input$select1, setData$txNomeParlamentar))) > 0){
@@ -82,10 +81,13 @@ shinyServer(function(input, output) {
     
     
   
-    p = ggplot( setData, aes(Data, Valor, color= txtPassageiro, text = paste("Nome:", txNomeParlamentar,"<br>Trecho:", txtTrecho, "<br>Partido:", sgPartido))) + 
+    p = ggplot( setData, aes(Data, Valor, color= Tipo, text = paste("Nome:", txNomeParlamentar,"<br>Trecho:", txtTrecho, "<br>Partido:", sgPartido))) + 
       geom_point(position = position_jitter(width = .1), alpha = .4) +
-      ylab("Valor do bilhete emitido") + 
-      xlab("Data de emissão do bilhete") + guides(fill=guide_legend(title = "Passageiro é um terceiro beneficiado"))+ scale_x_date()
+      scale_color_manual(values = c("Parlamentar" = 'orange', "Terceiro" = 'darkturquoise')) +
+      labs(colour="Tipo passageiro", title="Bilhetes emitidos além de BSB",
+      y="Valor", x="Data de emissão do bilhete") +
+      guides(fill=guide_legend(title = "Passageiro é um terceiro beneficiado")) +
+      scale_x_date()
 
    (gg <- ggplotly(p))
     
