@@ -14,39 +14,24 @@ Nesta análise, estaremos explorando dados referentes as ementas aprovados para 
 ``` {r, include=FALSE}
 require(ggplot2)
 library(ggfortify)
+require(data.table)
 
 categorias <- c('Saúde')
-nordeste <- c('PB', 'CE', 'MA','PI','BA','RN','PE','AL','SE')
 norte <- c('RR','AP', 'AM', 'PA', 'AC', 'RO','TO')
-coeste <- c('MT','GO','MF','DF')
-sudeste <- c('MG','ES', 'SP','RJ')
-sul <- c('PR','SC','RS')
 
 em_det <- read.csv("emendas_detalhes_parlamentar.csv", sep = ",", header = T, stringsAsFactors=FALSE)
-lazer <- subset(em_det, em_det$funcao.imputada == 'Desporto e Lazer')
+
 
 em_det <- subset(em_det, em_det$funcao.imputada %in% categorias)
-em_det["REGIAO"] <- NA
-em_det$REGIAO[em_det$UF_PROPONENTE %in% norte] <- "NORTE"
-em_det$REGIAO[em_det$UF_PROPONENTE %in% nordeste] <- "NORDESTE"
-em_det$REGIAO[em_det$UF_PROPONENTE %in% coeste] <- "C-OESTE"
-em_det$REGIAO[em_det$UF_PROPONENTE %in% sudeste] <- "SUDESTE"
-em_det$REGIAO[em_det$UF_PROPONENTE %in% sul] <- "SUL"
-
-# nordeste <- subset(em_det, em_det$UF_PROPONENTE %in% nordeste)
-lazer <- subset(lazer, lazer$UF_PROPONENTE %in% norte)
-
-norte <- subset(em_det, em_det$UF_PROPONENTE %in% norte)
-# coeste <- subset(em_det, em_det$UF_PROPONENTE %in% coeste)
-# sudeste <- subset(em_det, em_det$UF_PROPONENTE %in% sudeste)
-# sul <- subset(em_det, em_det$UF_PROPONENTE %in% sul)
 
 
-# nordeste$DIA_INIC_VIGENCIA_PROPOSTA <- as.Date(nordeste$DIA_INIC_VIGENCIA_PROPOSTA, "%d/%m/%Y")
-# nordeste$DIA_FIM_VIGENCIA_PROPOSTA <- as.Date(nordeste$DIA_FIM_VIGENCIA_PROPOSTA , "%d/%m/%Y")
-# nordeste["DIAS"] <- NA
-# nordeste$DIAS <- as.numeric( nordeste$DIA_FIM_VIGENCIA_PROPOSTA - nordeste$DIA_INIC_VIGENCIA_PROPOSTA )
-# nordeste.k <- data.frame(nordeste$DIAS, nordeste$VALOR_REPASSE_EMENDA)
+em_det["TIPO"] <- NA
+em_det$TIPO[grepl("CONSTRUÇÃO", em_det$OBJETO_PROPOSTA )] <- "Construção"
+em_det$TIPO[grepl("AQUISIÇÃO", em_det$OBJETO_PROPOSTA)] <- "Aquisição"
+em_det$TIPO[grepl("CAPACITAÇÃO", em_det$OBJETO_PROPOSTA)] <- "Capacitação"
+em_det$TIPO[grepl("CONTRUÇÃO", em_det$OBJETO_PROPOSTA)] <- "Construção"
+em_det$TIPO[grepl("REFORMA", em_det$OBJETO_PROPOSTA) | grepl("MANUTENÇÃO", em_det$OBJETO_PROPOSTA) | grepl("AMPLIAÇÃO", em_det$OBJETO_PROPOSTA) | grepl("CONCLUSÃO", em_det$OBJETO_PROPOSTA)] <- "Ampliação, manutenção, reforma ou conclusão"
+
 
 em_det$DIA_INIC_VIGENCIA_PROPOSTA <- as.Date(em_det$DIA_INIC_VIGENCIA_PROPOSTA, "%d/%m/%Y")
 em_det$DIA_FIM_VIGENCIA_PROPOSTA <- as.Date(em_det$DIA_FIM_VIGENCIA_PROPOSTA , "%d/%m/%Y")
@@ -54,131 +39,27 @@ em_det["DIAS"] <- NA
 em_det$DIAS <- as.numeric( em_det$DIA_FIM_VIGENCIA_PROPOSTA - em_det$DIA_INIC_VIGENCIA_PROPOSTA )
 
 
-norte$DIA_INIC_VIGENCIA_PROPOSTA <- as.Date(norte$DIA_INIC_VIGENCIA_PROPOSTA, "%d/%m/%Y")
-norte$DIA_FIM_VIGENCIA_PROPOSTA <- as.Date(norte$DIA_FIM_VIGENCIA_PROPOSTA , "%d/%m/%Y")
-norte["DIAS"] <- NA
-norte$DIAS <- as.numeric( norte$DIA_FIM_VIGENCIA_PROPOSTA - norte$DIA_INIC_VIGENCIA_PROPOSTA )
+norte <- subset(em_det, em_det$UF_PROPONENTE %in% norte)
 norte.k <- data.frame(norte$DIAS, norte$VALOR_REPASSE_EMENDA)
 
-lazer$DIA_INIC_VIGENCIA_PROPOSTA <- as.Date(lazer$DIA_INIC_VIGENCIA_PROPOSTA, "%d/%m/%Y")
-lazer$DIA_FIM_VIGENCIA_PROPOSTA <- as.Date(lazer$DIA_FIM_VIGENCIA_PROPOSTA , "%d/%m/%Y")
-lazer["DIAS"] <- NA
-lazer$DIAS <- as.numeric( lazer$DIA_FIM_VIGENCIA_PROPOSTA - lazer$DIA_INIC_VIGENCIA_PROPOSTA )
-lazer.k <- data.frame(lazer$DIAS, lazer$VALOR_REPASSE_EMENDA)
-
-
-# coeste$DIA_INIC_VIGENCIA_PROPOSTA <- as.Date(coeste$DIA_INIC_VIGENCIA_PROPOSTA, "%d/%m/%Y") 
-# coeste$DIA_FIM_VIGENCIA_PROPOSTA <- as.Date(coeste$DIA_FIM_VIGENCIA_PROPOSTA , "%d/%m/%Y")
-# coeste["DIAS"] <- NA
-# coeste$DIAS <- as.numeric( coeste$DIA_FIM_VIGENCIA_PROPOSTA - coeste$DIA_INIC_VIGENCIA_PROPOSTA )
-# coeste.k <- data.frame(coeste$DIAS, coeste$VALOR_REPASSE_EMENDA)
-# 
-# sudeste$DIA_INIC_VIGENCIA_PROPOSTA <- as.Date(sudeste$DIA_INIC_VIGENCIA_PROPOSTA, "%d/%m/%Y") 
-# sudeste$DIA_FIM_VIGENCIA_PROPOSTA <-as.Date(sudeste$DIA_FIM_VIGENCIA_PROPOSTA , "%d/%m/%Y")
-# sudeste["DIAS"] <- NA
-# sudeste$DIAS <- as.numeric( sudeste$DIA_FIM_VIGENCIA_PROPOSTA - sudeste$DIA_INIC_VIGENCIA_PROPOSTA )
-# sudeste.k <- data.frame(sudeste$DIAS, sudeste$VALOR_REPASSE_EMENDA)
-# 
-# 
-# sul$DIA_INIC_VIGENCIA_PROPOSTA <- as.Date(sul$DIA_INIC_VIGENCIA_PROPOSTA, "%d/%m/%Y") 
-# sul$DIA_FIM_VIGENCIA_PROPOSTA <- as.Date(sul$DIA_FIM_VIGENCIA_PROPOSTA , "%d/%m/%Y")
-# sul["DIAS"] <- NA
-# sul$DIAS <- as.numeric( sul$DIA_FIM_VIGENCIA_PROPOSTA - sul$DIA_INIC_VIGENCIA_PROPOSTA)
-# sul.k <- data.frame(sul$DIAS, sul$VALOR_REPASSE_EMENDA)
-
-
 ```
-```{r, echo=FALSE}
-# ggplot(nordeste, aes(nordeste$DIAS, nordeste$VALOR_REPASSE_EMENDA, color = funcao.imputada)) + 
-#       geom_point(position = position_jitter(width = .1), alpha = .4)
-# 
-# autoplot(kmeans(nordeste.k,3), data = nordeste.k)
-# d<- dist(scale(nordeste.k))
-# hc <- hclust(d, method="average")
-# plot(hc)
-# rect.hclust(hc, k=5)
-# cluster_complete <- cutree(hc, k=4)
-# plot(scale(nordeste.k), col=cluster_complete)
 
-ggplot(em_det, aes(DIAS, VALOR_REPASSE_EMENDA, color = REGIAO)) + 
+
+```{r}
+
+ggplot(norte, aes(DIAS, VALOR_REPASSE_EMENDA)) + 
       geom_point(position = position_jitter(width = .1), alpha = .4)
 
-ggplot(norte, aes(DIAS, VALOR_REPASSE_EMENDA, color = funcao.imputada)) + 
+ggplot(norte, aes(DIAS, VALOR_REPASSE_EMENDA, color = NATUREZA_JURIDICA )) + 
       geom_point(position = position_jitter(width = .1), alpha = .4)
 
-# autoplot(kmeans(norte.k,6), data = norte.k)
+
+ggplot(norte, aes(DIAS, VALOR_REPASSE_EMENDA, color = TIPO )) + 
+      geom_point(position = position_jitter(width = .1), alpha = .4)
+
 
 d<- dist(scale(norte.k))
 hc <- hclust(d, method="average")
-# plot(hc)
-# rect.hclust(hc, k=5)
 cluster_complete <- cutree(hc, k=6)
 plot(scale(norte.k), col=cluster_complete)
-
-
-
-
-ggplot(lazer, aes(DIAS, VALOR_REPASSE_EMENDA, color = funcao.imputada)) + 
-      geom_point(position = position_jitter(width = .1), alpha = .4)
-
-# autoplot(kmeans(lazer.k,6), data = lazer.k)
-
-d<- dist(scale(lazer.k))
-hc <- hclust(d, method="average")
-# plot(hc)
-# rect.hclust(hc, k=5)
-cluster_complete <- cutree(hc, k = 6)
-plot(scale(lazer.k), col=cluster_complete)
-
-
-
-# ggplot(coeste, aes(DIAS, VALOR_REPASSE_EMENDA, color = funcao.imputada)) + 
-#       geom_point(position = position_jitter(width = .1), alpha = .4)
-# 
-# autoplot(kmeans(coeste.k,3), data = coeste.k)
-# 
-# d<- dist(scale(coeste.k))
-# hc <- hclust(d, method="average")
-# plot(hc)
-# rect.hclust(hc, k=5)
-# cluster_complete <- cutree(hc, k=5)
-# plot(scale(coeste.k), col=cluster_complete)
-# 
-# 
-# 
-# 
-# ggplot(sudeste, aes(DIAS, VALOR_REPASSE_EMENDA, color = funcao.imputada)) + 
-#       geom_point(position = position_jitter(width = .1), alpha = .4)
-# 
-# autoplot(kmeans(sudeste.k,3), data = sudeste.k)
-# 
-# d<- dist(scale(sudeste.k))
-# hc <- hclust(d, method="average")
-# plot(hc)
-# rect.hclust(hc, k=5)
-# cluster_complete <- cutree(hc, k=4)
-# plot(scale(sudeste.k), col=cluster_complete)
-# 
-# 
-# 
-# ggplot(sul, aes(DIAS, VALOR_REPASSE_EMENDA, color = funcao.imputada)) + 
-#       geom_point(position = position_jitter(width = .1), alpha = .4)
-# 
-# autoplot(kmeans(sul.k,3), data = sul.k)
-# 
-# d<- dist(scale(sul.k))
-# hc <- hclust(d, method="average")
-# plot(hc)
-# rect.hclust(hc, k=5)
-# cluster_complete <- cutree(hc, k=4)
-# plot(scale(sul.k), col=cluster_complete)
-
 ```
-
-
-<!-- ```{r} -->
-<!-- autoplot(kmeans(pb,3), data = pb) -->
-
-<!-- ggplot(pb, aes(pb$paraiba.DIAS , pb$paraiba.VALOR_REPASSE_EMENDA )) + geom_point(position = position_jitter(width = .8), alpha = .3)  -->
-
-<!-- ``` -->
