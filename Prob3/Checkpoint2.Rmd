@@ -1,0 +1,56 @@
+---
+title: "Problema 3 - Checkpoint 2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+``` {r}
+library(ggfortify)
+require(ggplot2)
+require(dplyr)
+require(Rtsne)
+require(GGally)
+require(reshape2)
+library(knitr)
+library(cluster)
+library(ggdendro)
+
+
+emendas <- read.csv("emendas_area_parlamentar.csv", sep = ",", header = T, stringsAsFactors=FALSE)
+
+emendas.cp2 <- data.frame(emendas$NOME_PARLAMENTAR , emendas$Saneamento, emendas$Saúde, emendas$Urbanismo, emendas$Gestão.Ambiental)
+emendas.cp2 <- subset(emendas.cp2, emendas.cp2$emendas.Gestão.Ambiental > 0 & emendas.cp2$emendas.Saneamento > 0 & emendas.cp2$emendas.Saúde > 0 & emendas.cp2$emendas.Urbanismo > 0)
+
+emendas.cp22 <- log(emendas.cp2[,2:5])
+
+emendas.cp22$emendas.NOME_PARLAMENTAR <- emendas.cp2$emendas.NOME_PARLAMENTAR
+
+row.names(emendas.cp22) = emendas.cp22$emendas.NOME_PARLAMENTAR
+
+head(emendas.cp22)
+emendas.pca <- prcomp(select(emendas.cp22, -emendas.NOME_PARLAMENTAR) , center = TRUE, scale. = TRUE)
+names(emendas.pca)
+print(emendas.pca)
+biplot(emendas.pca,scale=0)
+autoplot(emendas.pca, data = emendas.cp22, label = F)
+
+ plot_pve <- function(prout){
++   pr.var <- emendas.pca$sdev^2
++   pve <- pr.var / sum(pr.var)
++   df = data.frame(x = 1:NROW(pve), y = cumsum(pve))
++   ggplot(df, aes(x = x, y = y)) + 
++     geom_point(size = 3) + 
++     geom_line() + 
++     labs(x='Principal Component', y = 'Cumuative Proportion of Variance Explained')
++ }
+ 
+ plot_pve(emendas.pca)
+ 
+ 
+
+
+```
