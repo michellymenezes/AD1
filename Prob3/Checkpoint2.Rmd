@@ -6,9 +6,11 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+## Redução de  dimensionalidade
 
+Para este problema, foram escolhidas 4 variáveis, tornando os dados uma estrutura de 4 dimensões. As variáveis escolhidas foram relacionadas a categorias que parlamentares escolhem investir com emendas, sendo elas: saneamento, saúde, gestão ambiental e urbanismo.
 
-``` {r}
+``` {r, include = FALSE}
 library(ggfortify)
 require(ggplot2)
 require(dplyr)
@@ -18,9 +20,18 @@ require(reshape2)
 library(knitr)
 library(cluster)
 library(ggdendro)
+```
 
 
+```{r}
 emendas <- read.csv("emendas_area_parlamentar.csv", sep = ",", header = T, stringsAsFactors=FALSE)
+emendasD <- read.csv("emendas_detalhes_parlamentar.csv", sep = ",", header = T, stringsAsFactors=FALSE)
+
+norte <- c('RR','AP', 'AM', 'PA', 'AC', 'RO','TO')
+sul <- c('PR', 'RS', 'SC')
+sudeste <- c('MG', 'SP', 'RJ', 'ES')
+nordeste <- c('MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA')
+coeste <- c('MT', 'DF', 'GO', 'MS')
 
 emendas.cp2 <- data.frame(emendas$NOME_PARLAMENTAR , emendas$Saneamento, emendas$Saúde, emendas$Urbanismo, emendas$Gestão.Ambiental)
 emendas.cp2 <- subset(emendas.cp2, emendas.cp2$emendas.Gestão.Ambiental > 0 & emendas.cp2$emendas.Saneamento > 0 & emendas.cp2$emendas.Saúde > 0 & emendas.cp2$emendas.Urbanismo > 0)
@@ -31,25 +42,60 @@ emendas.cp22$emendas.NOME_PARLAMENTAR <- emendas.cp2$emendas.NOME_PARLAMENTAR
 
 row.names(emendas.cp22) = emendas.cp22$emendas.NOME_PARLAMENTAR
 
+emendas.cp22["Estado"] <- NA
+emendas.cp22["Regiao"] <- NA
+
+for (row in 1:nrow(emendas.cp22)){
+  uf <- which(grepl(emendas.cp22[row,5], emendasD$NOME_PARLAMENTAR))[1]
+  emendas.cp22[row, 6] <- emendasD[uf, 11]
+}
+
+emendas.cp22$Regiao[emendas.cp22$Estado %in% norte] <- "norte"
+emendas.cp22$Regiao[emendas.cp22$Estado %in% sul] <- "sul"
+emendas.cp22$Regiao[emendas.cp22$Estado %in% nordeste] <- "nordeste"
+emendas.cp22$Regiao[emendas.cp22$Estado %in% coeste] <- "coeste"
+emendas.cp22$Regiao[emendas.cp22$Estado %in% sudeste] <- "sudeste"
+```
+
+
+```{r}
 head(emendas.cp22)
-emendas.pca <- prcomp(select(emendas.cp22, -emendas.NOME_PARLAMENTAR) , center = TRUE, scale. = TRUE)
+emendas.pca <- prcomp(select(emendas.cp22, -emendas.NOME_PARLAMENTAR, -Estado, -Regiao) , center = TRUE, scale. = TRUE)
 names(emendas.pca)
 print(emendas.pca)
 biplot(emendas.pca,scale=0)
-autoplot(emendas.pca, data = emendas.cp22, label = F)
+
+autoplot(emendas.pca, color="Estado", size = 3, data = emendas.cp22, label = F)
+
+
 
  plot_pve <- function(prout){
-+   pr.var <- emendas.pca$sdev^2
-+   pve <- pr.var / sum(pr.var)
-+   df = data.frame(x = 1:NROW(pve), y = cumsum(pve))
-+   ggplot(df, aes(x = x, y = y)) + 
-+     geom_point(size = 3) + 
-+     geom_line() + 
-+     labs(x='Principal Component', y = 'Cumuative Proportion of Variance Explained')
-+ }
+   pr.var <- emendas.pca$sdev^2
+   pve <- pr.var / sum(pr.var)
+   df = data.frame(x = 1:NROW(pve), y = cumsum(pve))
+   ggplot(df, aes(x = x, y = y)) + 
+     geom_point(size = 3) + 
+     geom_line() + 
+     labs(x='Principal Component', y = 'Cumuative Proportion of Variance Explained')
+}
  
  plot_pve(emendas.pca)
  
+ cp = emendas.cp22 %>% filter(!duplicated(emendas.cp22))
+ emendas.tsne = Rtsne(select(cp, -emendas.NOME_PARLAMENTAR, -Estado, -Regiao), 
+                 verbose = TRUE, perplexity = 10)
+ df = as.data.frame( emendas.tsne$Y)
+df$Estado = cp$Estado
+
+ggplot(df, aes(x = V1, y = V2, label = Estado)) + 
+  geom_point(alpha = 0.5, size = 3, color = "tomato") +
+      geom_text(alpha = .7, size = 4, hjust = -.2)
+
+df$Regiao = cp$Regiao
+
+ggplot(df, aes(x = V1, y = V2, label = Regiao)) + 
+  geom_point(alpha = 0.5, size = 3, color = "tomato") +
+    geom_text(alpha = .7, size = 4, hjust = -.2)
  
 
 
