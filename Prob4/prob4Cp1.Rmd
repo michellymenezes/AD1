@@ -1,0 +1,18 @@
+---
+title: "Problema 4 - Checkpoint 1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+
+avaliacoes <- read.csv("ml-latest-small/ratings.csv")
+re_movies <- c(5219, 8861, 55232, 80363, 96691)
+
+
+
+```
