@@ -11,54 +11,53 @@ library(dplyr)
 library(Hmisc)
 library(resample)
 
-
-```
-
-
-```{r}
-
 avaliacoes <- read.csv("ml-latest-small/ratings.csv")
-h_movies <- c(98809, 106489, 118696)
 
-hobbit <- subset(avaliacoes, avaliacoes$movieId == h_movies[1] | avaliacoes$movieId == h_movies[2] | avaliacoes$movieId == h_movies[3])
+```
 
-h_one <- subset(avaliacoes, avaliacoes$movieId == h_movies[1])
-h_two <- subset(avaliacoes, avaliacoes$movieId == h_movies[2])
-h_three <- subset(avaliacoes, avaliacoes$movieId == h_movies[3])
 
-ggplot(h_one, aes(rating)) + geom_histogram(binwidth = 0.5)
-ggplot(h_two, aes(rating)) + geom_histogram(binwidth = 0.5)
-ggplot(h_three, aes(rating)) + geom_histogram(binwidth = 0.5)
+```{r}
+jp_movies <- c(480, 1544, 4638, 117529)
+
+jp1 <- subset(avaliacoes, avaliacoes$movieId == jp_movies[1])
+jp2 <- subset(avaliacoes, avaliacoes$movieId == jp_movies[2])
+jp3 <- subset(avaliacoes, avaliacoes$movieId == jp_movies[3])
+
+jp <- subset(avaliacoes, avaliacoes$movieId == jp_movies[1] | avaliacoes$movieId == jp_movies[2] | avaliacoes$movieId == jp_movies[3])
+
+ggplot(jp1, aes(rating)) + geom_histogram(binwidth = 0.5)
+ggplot(jp2, aes(rating)) + geom_histogram(binwidth = 0.5)
+ggplot(jp3, aes(rating)) + geom_histogram(binwidth = 0.5)
 
 ```
 
 ```{r}
 
-b = bootstrap(h_one, median(rating))
-median.hOne = CI.percentile(b, probs = c(.025, .975))
-median.hOne
+b = bootstrap(jp1, median(rating))
+median.jp1 = CI.percentile(b, probs = c(.025, .975))
+median.jp1
 
-b = bootstrap(h_two, median(rating))
-median.hTwo = CI.percentile(b, probs = c(.025, .975))
-median.hTwo
+b = bootstrap(jp2, median(rating))
+median.jp2 = CI.percentile(b, probs = c(.025, .975))
+median.jp2
 
-b = bootstrap(h_three, median(rating))
-median.hThree = CI.percentile(b, probs = c(.025, .975))
-median.hThree
+b = bootstrap(jp3, median(rating))
+median.jp3 = CI.percentile(b, probs = c(.025, .975))
+median.jp3
 
-b = bootstrap(h_one, mean(rating))
-mean.hOne = CI.percentile(b, probs = c(.025, .975))
-mean.hOne
+b = bootstrap(jp1, mean(rating))
+mean.jp1 = CI.percentile(b, probs = c(.025, .975))
+mean.jp1
 
-b = bootstrap(h_two, mean(rating))
-mean.hTwo = CI.percentile(b, probs = c(.025, .975))
-mean.hTwo
+b = bootstrap(jp2, mean(rating))
+mean.jp2 = CI.percentile(b, probs = c(.025, .975))
+mean.jp2
 
-b = bootstrap(h_three, mean(rating))
-mean.hThree = CI.percentile(b, probs = c(.025, .975))
-mean.hThree
+b = bootstrap(jp3, mean(rating))
+mean.jp3 = CI.percentile(b, probs = c(.025, .975))
+mean.jp3
 
-df = data.frame(rbind(median.hOne, median.hTwo, median.hThree, mean.hOne, mean.hTwo, mean.hThree))
+df = data.frame(rbind(median.jp1, median.jp2, median.jp3, mean.jp1, mean.jp2, mean.jp3))
 df$medida = row.names(df)
 
 df %>% 
@@ -66,8 +65,156 @@ df %>%
   geom_errorbar(width = .2)
 ```
 
+
 ```{r}
-ggplot(h_one, aes(x = movieId, y = rating)) + 
+ggplot(jp1, aes(x = movieId, y = rating)) + 
   stat_summary(fun.y = mean, geom = "point") + 
   stat_summary(fun.data = mean_cl_boot, geom = "errorbar", width = 0.2)
+```
+
+
+```{r}
+movie.genre <- read.csv("movie-genre.csv")
+genre.median <- data.frame(n=numeric(0), mediana=numeric(0))
+genre.mean <- data.frame(n=numeric(0), media=numeric(0))
+
+
+
+for(id in 1:149532){
+  if(nrow( subset(movie.genre, movieId == id) ) > 0){
+    
+    id <- as.numeric(id)
+    avaliacoes1 <- subset(avaliacoes, movieId == id)
+    
+    if(nrow(avaliacoes1) > 0){
+      
+      if(movie.genre$genre[movie.genre$movieId==id] == "(no genres listed)"){
+        n <- 0
+      }
+      else{
+          n <- as.numeric(sum(movie.genre$movieId == id))
+      }
+      
+      mediana <- median(avaliacoes1$rating)
+      media <- mean(avaliacoes1$rating)
+      
+      genre.median <- rbind(genre.median, data.frame(n = n, mediana = mediana))
+      genre.mean <- rbind(genre.mean, data.frame(n = n, media = media))
+    }
+  }
+}
+
+#g0 <- subset(genre.median, genre.median$n == 0)
+g1 <- subset(genre.median, genre.median$n == 1)
+g2 <- subset(genre.median, genre.median$n == 2)
+g3 <- subset(genre.median, genre.median$n == 3)
+g4 <- subset(genre.median, genre.median$n == 4)
+g5 <- subset(genre.median, genre.median$n == 5)
+g6 <- subset(genre.median, genre.median$n == 6)
+#g7 <- subset(genre.median, genre.median$n == 7)
+#g8 <- subset(genre.median, genre.median$n == 8)
+#g10 <- subset(genre.median, genre.median$n == 10)
+
+
+```
+
+```{r}
+#b = bootstrap(g0, median(mediana))
+#median.g0 = CI.percentile(b, probs = c(.025, .975))
+#median.g0
+
+b = bootstrap(g1, median(mediana))
+median.g1 = CI.percentile(b, probs = c(.025, .975))
+median.g1
+
+b = bootstrap(g2, median(mediana))
+median.g2 = CI.percentile(b, probs = c(.025, .975))
+median.g2
+
+b = bootstrap(g3, median(mediana))
+median.g3 = CI.percentile(b, probs = c(.025, .975))
+median.g3
+
+b = bootstrap(g4, median(mediana))
+median.g4 = CI.percentile(b, probs = c(.025, .975))
+median.g4
+
+b = bootstrap(g5, median(mediana))
+median.g5 = CI.percentile(b, probs = c(.025, .975))
+median.g5
+
+b = bootstrap(g6, median(mediana))
+median.g6 = CI.percentile(b, probs = c(.025, .975))
+median.g6
+
+#b = bootstrap(g7, median(mediana))
+#median.g7 = CI.percentile(b, probs = c(.025, .975))
+#median.g7
+
+#b = bootstrap(g8, median(mediana))
+#median.g8 = CI.percentile(b, probs = c(.025, .975))
+#median.g8
+
+#b = bootstrap(g10, median(mediana))
+#median.g10 = CI.percentile(b, probs = c(.025, .975))
+#median.g10
+
+
+df = data.frame(rbind(median.g1, median.g2, median.g3, median.g4, median.g5, median.g6))
+df$medida = row.names(df)
+
+df %>% 
+  ggplot(aes(x = medida, ymin = X2.5., ymax = X97.5.)) + 
+  geom_errorbar(width = .2)
+```
+
+
+```{r}
+#b = bootstrap(g0, mean(media))
+#mean.g0 = CI.percentile(b, probs = c(.025, .975))
+#mean.g0
+
+b = bootstrap(g1, mean(media))
+mean.g1 = CI.percentile(b, probs = c(.025, .975))
+mean.g1
+
+b = bootstrap(g2, mean(media))
+mean.g2 = CI.percentile(b, probs = c(.025, .975))
+mean.g2
+
+b = bootstrap(g3, mean(media))
+mean.g3 = CI.percentile(b, probs = c(.025, .975))
+mean.g3
+
+b = bootstrap(g4, mean(media))
+mean.g4 = CI.percentile(b, probs = c(.025, .975))
+mean.g4
+
+b = bootstrap(g5, mean(media))
+mean.g5 = CI.percentile(b, probs = c(.025, .975))
+mean.g5
+
+b = bootstrap(g6, mean(media))
+mean.g6 = CI.percentile(b, probs = c(.025, .975))
+mean.g6
+
+#b = bootstrap(g7, mean(media))
+#mean.g7 = CI.percentile(b, probs = c(.025, .975))
+#mean.g7
+
+#b = bootstrap(g8, mean(media))
+#mean.g8 = CI.percentile(b, probs = c(.025, .975))
+#mean.g8
+
+#b = bootstrap(g10, mean(media))
+#mean.g10 = CI.percentile(b, probs = c(.025, .975))
+#mean.g10
+
+
+df = data.frame(rbind(mean.g1, mean.g2, mean.g3, mean.g4, mean.g5, mean.g6))
+df$medida = row.names(df)
+
+df %>% 
+  ggplot(aes(x = medida, ymin = X2.5., ymax = X97.5.)) + 
+  geom_errorbar(width = .2)
 ```
