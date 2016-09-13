@@ -5,14 +5,69 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(GGally)
+library(dplyr)
+library(Hmisc)
+library(resample)
+
+
 ```
 
 
 ```{r}
 
 avaliacoes <- read.csv("ml-latest-small/ratings.csv")
-re_movies <- c(5219, 8861, 55232, 80363, 96691)
+h_movies <- c(98809, 106489, 118696)
 
+hobbit <- subset(avaliacoes, avaliacoes$movieId == h_movies[1] | avaliacoes$movieId == h_movies[2] | avaliacoes$movieId == h_movies[3])
 
+h_one <- subset(avaliacoes, avaliacoes$movieId == h_movies[1])
+h_two <- subset(avaliacoes, avaliacoes$movieId == h_movies[2])
+h_three <- subset(avaliacoes, avaliacoes$movieId == h_movies[3])
 
+ggplot(h_one, aes(rating)) + geom_histogram(binwidth = 0.5)
+ggplot(h_two, aes(rating)) + geom_histogram(binwidth = 0.5)
+ggplot(h_three, aes(rating)) + geom_histogram(binwidth = 0.5)
+
+```
+
+```{r}
+
+b = bootstrap(h_one, median(rating))
+median.hOne = CI.percentile(b, probs = c(.025, .975))
+median.hOne
+
+b = bootstrap(h_two, median(rating))
+median.hTwo = CI.percentile(b, probs = c(.025, .975))
+median.hTwo
+
+b = bootstrap(h_three, median(rating))
+median.hThree = CI.percentile(b, probs = c(.025, .975))
+median.hThree
+
+b = bootstrap(h_one, mean(rating))
+mean.hOne = CI.percentile(b, probs = c(.025, .975))
+mean.hOne
+
+b = bootstrap(h_two, mean(rating))
+mean.hTwo = CI.percentile(b, probs = c(.025, .975))
+mean.hTwo
+
+b = bootstrap(h_three, mean(rating))
+mean.hThree = CI.percentile(b, probs = c(.025, .975))
+mean.hThree
+
+df = data.frame(rbind(median.hOne, median.hTwo, median.hThree, mean.hOne, mean.hTwo, mean.hThree))
+df$medida = row.names(df)
+
+df %>% 
+  ggplot(aes(x = medida, ymin = X2.5., ymax = X97.5.)) + 
+  geom_errorbar(width = .2)
+```
+
+```{r}
+ggplot(h_one, aes(x = movieId, y = rating)) + 
+  stat_summary(fun.y = mean, geom = "point") + 
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar", width = 0.2)
 ```
