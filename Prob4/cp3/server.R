@@ -54,14 +54,17 @@ moviesdates = na.omit(moviesdates)
 
 
 shinyServer(function(input, output) {
-  output$plot <- renderPlotly({
+  output$plot0 <- renderPlot({
     
     p = ggplot( moviesdates, aes(decade , rating)) + 
       geom_point(position = position_jitter(width = .1), alpha = .4)
     
-    #(gg <- ggplotly(p))
+    print(p)
+  })
     
-    
+  
+  
+    output$plot1 <- renderPlot({
     df <- data.frame()
     
     for(i in decades){
@@ -73,11 +76,14 @@ shinyServer(function(input, output) {
     
     df$decade = decades
     
-    p = df %>% 
-      ggplot(aes(x = decade, ymin = X2.5., ymax = X97.5.)) + 
-      geom_errorbar(width = 5) + labs(x="Ano do filme", y="Mediana")
+    q = df %>% 
+      ggplot(aes(x = decade, ymin = X2.5., ymax = X97.5.)) +
+      geom_errorbar(width = 5) +
+      scale_x_continuous(breaks = pretty(df$decade, n = 10)) +
+      labs(x="Ano do filme", y="Mediana")
+      
     
-    (gg <- ggplotly(p))
+    print(q)
     
   })
   

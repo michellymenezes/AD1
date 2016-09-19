@@ -20,7 +20,8 @@ shinyUI(fluidPage(
     
     mainPanel(width = 9,
               h2("Filmes"),
-              plotlyOutput("plot")
+              plotOutput(outputId = "plot0"),
+              plotOutput(outputId = "plot1")
             )
     
   )
