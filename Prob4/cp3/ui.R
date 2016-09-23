@@ -9,12 +9,14 @@
 
 library(shiny)
 library(plotly)
+library(shinythemes)
+
 
 
 shinyUI(fluidPage(
   
   titlePanel("Checkpoint 3"),
-  
+  theme = shinytheme("flatly"),
 
     navlistPanel(tabPanel("Apresentação",
                           h3("Apresentação"),
@@ -41,8 +43,14 @@ shinyUI(fluidPage(
                           fluidRow(plotOutput(outputId = "plot5"))
                           ),
                  "Gênero + Gêneros",
-                 tabPanel("Geral"),
                  tabPanel("Uma análise"),
-                 tabPanel("Sua vez")
+                 tabPanel("Sua vez",
+                          selectInput("selectGenre1", label = h3("Escolha um gênero:"), 
+                                      choices = list("Adventure", "Animation", "Children", "Comedy", "Fantasy", "Romance", "Drama", "Action", "Crime", "Thriller",
+                                                     "Horror", "Mystery", "Sci-Fi", "War", "Musical", "Documentary", "IMAX", "Western", "Film-Noir"), 
+                                      selected = "Adventure"),
+                          fluidRow(plotOutput(outputId = "plot6"))
+                          
+                          )
     )
 ))

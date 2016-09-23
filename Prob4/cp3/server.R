@@ -13,7 +13,7 @@ library(readr)
 library(dplyr, warn.conflicts = F)
 library(Hmisc)
 library(resample)
-
+library(stringr)
 
 data <- read.csv("data/ratings-por-filme.csv")
 
@@ -36,17 +36,28 @@ moviegenre = data %>%
 
 genres = unique(moviegenre$genre)
 moviegenre$year = as.numeric( substrYear(moviegenre$title))
+data$year = as.numeric( substrYear(data$title))
+
 decades = c(1910, 1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010)
+
+moviegenre$decade = NA
+data$decade = NA
 
 
 moviesdates = moviegenre[!duplicated(moviegenre[,c('movieId')]),]
-moviesdates$decade = NA
 n = -90
 for (i in 1:11){
   moviesdates$decade[moviesdates$year-2000 >= n] = decades[i]
+  moviegenre$decade[moviegenre$year-2000 >= n] = decades[i]
+  data$decade[data$year-2000 >= n] = decades[i]
+  
+  
   n = n + 10
 }
 moviesdates = na.omit(moviesdates)
+moviegenre = na.omit(moviegenre)
+data = na.omit(data)
+
 
 
 geral.df <- data.frame()
@@ -166,5 +177,34 @@ shinyServer(function(input, output) {
     
     print(outputN)
   })
+  
+  ###########################################
+  combGenres <- subset(data, str_count(data$genres, "[|]") > 0)
+  
+  output$plot6 <- renderPlot({
+    
+    combG = subset(combGenres, grepl(input$selectGenre1, combGenres$genres))
+    #combG2 = subset(combG, grepl(input$selectGenre2, combG$genres))
+    
+    combG.df <- data.frame()
+    vectorCombG <- c()
+    for(i in genres){
+      if(nrow(subset(combG, grepl(i, combG$genres))) >= 30){
+        b = bootstrap(subset(combG, grepl(i, combG$genres)) , median(rating))
+        median.combG = CI.percentile(b, probs = c(.025, .975))
+        combG.df <- data.frame(rbind(combG.df, data.frame(median.combG)))
+        vectorCombG <- c(vectorCombG, i)
+      }
+    }
+    combG.df$Gender = vectorCombG
+    
+    outputGenderN = combG.df %>%
+      ggplot(aes(x = Gender, ymin = X2.5., ymax = X97.5.)) +
+      geom_errorbar(width = 0.5) +
+      labs(x="Gênero", y="Mediana")
+    
+    print(outputGenderN)
+  })
+  
   
 })
