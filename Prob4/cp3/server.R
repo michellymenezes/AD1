@@ -8,7 +8,7 @@ library(Hmisc)
 library(resample)
 library(stringr)
 
-data <- read.csv("data/ratings-por-filme.csv")
+data <- read.csv("data/complete_data.csv")
 
 # l2w_genres = function(line){
 #   resposta = rep(line, times = 1)
@@ -190,8 +190,8 @@ shinyServer(function(input, output) {
   })
   
   ###########################################
-  combGenres <- subset(data, str_count(data$genres, "[|]") > 0)
-  
+  combGenres <- subset(data, data$nGenres > 1)
+
   output$plot6 <- renderPlot({
     
     combG = subset(combGenres, grepl(input$selectGenre1, combGenres$genres))
@@ -199,12 +199,6 @@ shinyServer(function(input, output) {
     combG.df <- data.frame()
     vectorCombG <- c()
     for(i in genres){
-      # if(nrow(subset(combG, 
-      #                (grepl(i, combG$genres) &
-      #                 str_count(combG$genres, "[|]") >= input$selectN0 &
-      #                  str_count(combG$genres, "[|]") <= input$selectN1)
-      #                )
-      #         ) > 30){
       if(nrow(subset(combG, grepl(i, combG$genres))) >= 30 & i != input$selectGenre1){
         b = bootstrap(subset(combG, grepl(i, combG$genres)) , mean(rating))
         median.combG = CI.percentile(b, probs = c(.025, .975))
@@ -217,11 +211,13 @@ shinyServer(function(input, output) {
     outputGenderN = combG.df %>%
       ggplot(aes(x = gender, ymin = X2.5., ymax = X97.5.)) +
       geom_errorbar(width = 0.5) +
-      labs(x="Gênero", y="Mediana")
+      labs(x="Gênero", y="Média")
     
     print(outputGenderN)
   })
-  
+ 
+  ###########################################################
+   
   output$plot7 <- renderPlot({
     
     advG = subset(combGenres, grepl("Adventure", combGenres$genres))
@@ -229,12 +225,6 @@ shinyServer(function(input, output) {
     advG.df <- data.frame()
     vectorAdvG <- c()
     for(i in genres){
-      # if(nrow(subset(combG, 
-      #                (grepl(i, combG$genres) &
-      #                 str_count(combG$genres, "[|]") >= input$selectN0 &
-      #                  str_count(combG$genres, "[|]") <= input$selectN1)
-      #                )
-      #         ) > 30){
       if(nrow(subset(advG, grepl(i, advG$genres))) >= 30 & i != "Adventure"){
         b = bootstrap(subset(advG, grepl(i, advG$genres)) , mean(rating))
         median.AdvG = CI.percentile(b, probs = c(.025, .975))
@@ -247,9 +237,61 @@ shinyServer(function(input, output) {
     outputAdvG = advG.df %>%
       ggplot(aes(x = gender, ymin = X2.5., ymax = X97.5.)) +
       geom_errorbar(width = 0.5) +
-      labs(x="Gênero", y="Mediana")
+      labs(x="Gênero", y="Média")
     
     print(outputAdvG)
+  })
+
+  #######################################################
+    
+  output$plot9 <- renderPlot({
+    
+    advC = subset(data, grepl("Adventure", combGenres$genres))
+    
+    advC.df <- data.frame()
+    vectorAdvG <- c()
+    for(i in 1:6){
+      if(nrow(subset(advC, advC$nGenres == i )) >= 30){
+        b = bootstrap(subset(advC, advC$nGenres == i) , mean(rating))
+        median.AdvG = CI.percentile(b, probs = c(.025, .975))
+        advC.df <- data.frame(rbind(advC.df, data.frame(median.AdvG)))
+        vectorAdvG <- c(vectorAdvG, i)
+      }
+    }
+    advC.df$nGenres = vectorAdvG
+    
+    outputAdvC = advC.df %>%
+      ggplot(aes(x = nGenres, ymin = X2.5., ymax = X97.5.)) +
+      geom_errorbar(width = 0.5) +
+      labs(x="Quantidade de gêneros", y="Média")
+    
+    print(outputAdvC)
+  })
+  
+  #####################################################
+  
+  output$plot10 <- renderPlot({
+    
+    advCI = subset(data, grepl(input$selectGenre1, combGenres$genres))
+    
+    advCI.df <- data.frame()
+    vectorAdvG <- c()
+    for(i in 1:6){
+      if(nrow(subset(advCI, advCI$nGenres == i )) >= 30){
+        b = bootstrap(subset(advCI, advCI$nGenres == i) , mean(rating))
+        median.AdvG = CI.percentile(b, probs = c(.025, .975))
+        advCI.df <- data.frame(rbind(advCI.df, data.frame(median.AdvG)))
+        vectorAdvG <- c(vectorAdvG, i)
+      }
+    }
+    advCI.df$nGenres = vectorAdvG
+    
+    outputAdvCI = advCI.df %>%
+      ggplot(aes(x = nGenres, ymin = X2.5., ymax = X97.5.)) +
+      geom_errorbar(width = 0.5) +
+      labs(x="Quantidade de gêneros", y="Média")
+    
+    print(outputAdvCI)
   })
   
 })
