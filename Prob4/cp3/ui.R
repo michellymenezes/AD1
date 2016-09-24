@@ -14,13 +14,14 @@ shinyUI(fluidPage(
                           br(),
                           p("Está é uma análise relacionada a filmes, juntamente com seus gêneros e avaliações de 
                           usuários. Cada filme foi avaliado por diversos usuários com notas que variam de 0.5 a 5. 
-                          Além disso cada filme possui gêneros de classificação e ano de lançamento."),
+                          Além disso, cada filme possui gêneros de classificação e ano de lançamento."),
                           p("O objetivo desse checkpoint é utilizar a técnica Bootstrap para o processo de reamostragem e,
-                          a partir desta, intepretar e comparar gráficos com representações de intervalos de confiança.
+                          a partir desta, interpretar e comparar gráficos com representações de intervalos de confiança.
                           Utilizamos reamostragem para inferir e tentar realizar afirmações sobre uma população a partir
                           de uma amostra da mesma."),
                           p("Para esta análise, utilizamos o tempo dividido em décadas e os valores associados as
-                          avaliações são resultados de reamostragem das médias dos mesmos."),
+                          avaliações são resultados de reamostragem das médias dos mesmos. Quando uma amostra possui menos de
+                            30 elementos, esta é desconsiderada e não analisada por não conter dados suficientes."),
                           br(),
                           p("Observação: esta é uma visualização com uma quantidade razoável de processamento. É muito
                           provável que os gráficos demorem a carregar inicialmente ou logo após alterar um valor de 
@@ -35,15 +36,15 @@ shinyUI(fluidPage(
                              dos anos, qual o comportamente resultante?"),
                           br(),
                           p("Para esta análise, vamos  escolher o gênero Adventure. A plotagem ao longo dos anos 
-                          relacioda a este gênero pode ser observada no gráfico logo abaixo."),
+                          relacionada a este gênero pode ser observada no gráfico logo abaixo."),
                           br(),
                           fluidRow(plotlyOutput(outputId = "plot2")),
                           br(),
                           p("Logo abaixo temos a representação do intervalo com confiança de 97.5%. A faixa tomada 
                           por cada intervalo é referente ao valor que a média de avaliações relacionadas ao gênero 
                           Adventure pode assumir para filmes lançados em cada década. Para que o processo de
-                          amostragem funcione corretamente precisamos de um número mínimo de elementos em cada amostra,
-                          então décadas com quantodades de filmes menores que 30 são desconsideradas e não incluídas 
+                          reamostragem funcione corretamente precisamos de um número mínimo de elementos em cada amostra,
+                          então décadas com quantidades de filmes menores que 30 são desconsideradas e não incluídas 
                           na análise."),
                           br(), 
                           fluidRow(plotOutput(outputId = "plot3")),
@@ -56,13 +57,13 @@ shinyUI(fluidPage(
                           filmes dos anos 90 podem assumir. Para esta categoria podemos, realizando o mesmo tipo de
                           comparação com os outros gêneros, inferir ainda mais: que a média de avaliações para filmes
                           da década de 50 é maior que qualquer outra."),
-                          p("Por outro lado não podemos afimar quando fazemos a mesma comparação para filmes de 2000 e
+                          p("Por outro lado não podemos afimar quando fazemos a mesma comparação para filmes de 1980 e
                           2010. Observando o gráfico, o máximo que podemos inferir é que existe a possibilidade de que 
-                          filmes lançados em 2010 possuam uma maior média de avaliações que aqueles lançados em 2000. 
+                          filmes lançados em 2010 possuam uma maior média de avaliações que aqueles lançados em 1980. 
                           Isso acontece porque há inteserção de valores nos intervalos. Por mais que filmes de 2010 
-                          possam atingir maiores médias, não significa que irá ocorrer. Se filmes do anos 2000 
-                          atingirem sua possibilidade maior de média e os de 2010 de menor média, o cenário fica
-                          favorável a inferir que filmes lançados em 2000 possuem uma melhor média em avaliações que 
+                          possam atingir maiores médias, não significa que irá ocorrer. Se filmes da década de 80 
+                          atingirem sua possibilidade de maior média e os de 2010 de menor média, o cenário fica
+                          favorável a inferir que filmes lançados em 1980 possuem uma melhor média em avaliações que 
                           aqueles da década de 2010."),
                           br(), 
                           h4("Visto que temos os intervalos gerados para as médias de avaliações a cada década, será
