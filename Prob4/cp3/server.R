@@ -72,9 +72,10 @@ shinyServer(function(input, output) {
 
     output$plot2 <- renderPlotly({
 
-      r = ggplot( adventure, aes(year , rating)) +
+      r = ggplot( adventure, aes(year , rating, text = paste("Título:", title,"<br>Gênero: Adventure"))) +
         scale_x_continuous(breaks = pretty(adventure$decade, n = 10)) +
-        geom_point(position = position_jitter(width = .1), alpha = .4)
+        geom_point(position = position_jitter(width = .1), alpha = .4, color="dodgerblue4") +
+        labs(title="Média de avaliações para filmes 'Adventure' ao longo dos anos", x= "Ano", y="Média de avaliação")
 
       (gg <- ggplotly(r))
     })
@@ -85,7 +86,7 @@ shinyServer(function(input, output) {
         ggplot(aes(x = decade, ymin = X2.5., ymax = X97.5.)) +
         geom_errorbar(width = 5) +
         scale_x_continuous(breaks = pretty(adventure.df$decade, n = 10)) +
-        labs(x="Década do filme", y="Mediana")
+        labs(title="Intervalos de confiança para avaliação ao longo das décadas", x="Década do filme", y="Média")
 
       print(s)
     })
@@ -97,7 +98,7 @@ shinyServer(function(input, output) {
         ggplot(aes(x = decade, ymin = X2.5., ymax = X97.5.)) +
         geom_errorbar(width = 5) +
         scale_x_continuous(breaks = pretty(popAdventure.df$decade, n = 10)) +
-        labs(x="Década do filme", y="Popularidade")
+        labs(title="Intervalos de confiança para popularidade ao longo das décadas", x="Década do filme", y="Popularidade")
       
       print(pop)
     })
@@ -114,9 +115,11 @@ shinyServer(function(input, output) {
     }
     genreN = na.omit(genreN)
     
-    p4 <- ggplot( genreN, aes(year , rating)) +
+    p4 <- ggplot( genreN, aes(year , rating, text = paste("Título:", title,"<br>Gênero: ", input$selectGenre0))) +
       scale_x_continuous(breaks = pretty(genreN$decade, n = 10)) +
-      geom_point(position = position_jitter(width = .1), alpha = .4)
+      geom_point(position = position_jitter(width = .1), alpha = .4, color="dodgerblue4") +
+      labs(title="Média de avaliações para filmes ao longo dos anos", x= "Ano", y="Média de avaliação")
+    
     (gg <- ggplotly(p4))
   })
   #####################################
@@ -147,7 +150,41 @@ shinyServer(function(input, output) {
       ggplot(aes(x = decade, ymin = X2.5., ymax = X97.5.)) +
       geom_errorbar(width = 5) +
       scale_x_continuous(breaks = pretty(genreN.df$decade, n = 10)) +
-      labs(x="Década do filme", y="Mediana")
+      labs(title="Intervalos de confiança para avaliação ao longo das décadas", x="Década do filme", y="Média")
+    
+    print(outputN)
+  })
+  
+  #############################################
+  
+  output$plot8 <- renderPlot({
+    
+    genrePopN = subset(moviegenre, moviegenre$genre == input$selectGenre0)
+    genrePopN$decade = NA
+    n = -90
+    for (i in 1:11){
+      genrePopN$decade[genrePopN$year-2000 >= n] = decades[i]
+      n = n + 10
+    }
+    genrePopN = na.omit(genrePopN)
+    
+    genrePopN.df <- data.frame()
+    vectorN <- c()
+    for(i in decades){
+      if(nrow(subset(genrePopN, decade == i)) >= 30){
+        b = bootstrap(subset(genrePopN, decade==i) , mean(popularity))
+        median.genreN = CI.percentile(b, probs = c(.025, .975))
+        genrePopN.df <- data.frame(rbind(genrePopN.df, data.frame(median.genreN)))
+        vectorN <- c(vectorN, i)
+      }
+    }
+    genrePopN.df$decade = vectorN
+    
+    outputN = genrePopN.df %>%
+      ggplot(aes(x = decade, ymin = X2.5., ymax = X97.5.)) +
+      geom_errorbar(width = 5) +
+      scale_x_continuous(breaks = pretty(genrePopN.df$decade, n = 10)) +
+      labs(title="Intervalos de confiança para popularidade ao longo das décadas", x="Década do filme", y="Média")
     
     print(outputN)
   })
