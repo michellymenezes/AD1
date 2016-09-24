@@ -136,11 +136,19 @@ shinyUI(fluidPage(
                              intervalos referentes as médias de avaliações quando agrupamos filmes de um determinado 
                              gênero de acordo com a quantidade total de gêneros que foi possuem?"),
                           br(),
-                          p(),
+                          p("Com essa segunda pergunta, nosso objetivo é gerar intervalos de confiança agrupando filmes
+                            de um determinado gênero pela quantidade de gêneros que possui. Seguindo com a categoria
+                            'Adventure', abaixo temos os intervalos gerados para a mesma. O eixo X é marcado com a quantidade
+                            de gêneros e o Y pela média de avaliação."),
                           br(),
                           fluidRow(plotOutput(outputId = "plot9")),
                           br(),
-                          p(),
+                          p("O que podemos tirar do gráfico acima é que todos os intervalos se interceptam. Nenhum intervalo
+                            está totalmente acima ou abaixo de outro. Dessa forma, apenas fazendo uma análise visual dos
+                            intervalos não é possível inferir que um grupo possuir maior média de avaliação que outro. 
+                            Podemos destacar que para filmes 'Adventure' que são classificados com 5 gêneros possuem um
+                            maior intervalo, que poderia ser diminuído e nos dar uma melhor precisão se o tamanho de sua 
+                            amostra for aumentado."),
                           br(), br()
                           ),
                  

@@ -211,7 +211,7 @@ shinyServer(function(input, output) {
     outputGenderN = combG.df %>%
       ggplot(aes(x = gender, ymin = X2.5., ymax = X97.5.)) +
       geom_errorbar(width = 0.5) +
-      labs(x="Gênero", y="Média")
+      labs(title="Intervalos de confiança para avaliação por combinação de gêneros", x="Gênero", y="Média")
     
     print(outputGenderN)
   })
@@ -237,7 +237,7 @@ shinyServer(function(input, output) {
     outputAdvG = advG.df %>%
       ggplot(aes(x = gender, ymin = X2.5., ymax = X97.5.)) +
       geom_errorbar(width = 0.5) +
-      labs(x="Gênero", y="Média")
+      labs(title="Intervalos de confiança para avaliação por combinação de gêneros", x="Gênero", y="Média")
     
     print(outputAdvG)
   })
@@ -263,7 +263,7 @@ shinyServer(function(input, output) {
     outputAdvC = advC.df %>%
       ggplot(aes(x = nGenres, ymin = X2.5., ymax = X97.5.)) +
       geom_errorbar(width = 0.5) +
-      labs(x="Quantidade de gêneros", y="Média")
+      labs(title="Intervalos de confiança para avaliação por quantidade de gêneros", x="Quantidade de gêneros", y="Média")
     
     print(outputAdvC)
   })
@@ -289,7 +289,7 @@ shinyServer(function(input, output) {
     outputAdvCI = advCI.df %>%
       ggplot(aes(x = nGenres, ymin = X2.5., ymax = X97.5.)) +
       geom_errorbar(width = 0.5) +
-      labs(x="Quantidade de gêneros", y="Média")
+      labs(title="Intervalos de confiança para avaliação por quantidade de gêneros", x="Quantidade de gêneros", y="Média")
     
     print(outputAdvCI)
   })
