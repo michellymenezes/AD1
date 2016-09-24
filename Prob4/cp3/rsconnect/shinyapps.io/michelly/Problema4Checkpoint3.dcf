@@ -1,0 +1,10 @@
+name: Problema4Checkpoint3
+account: michelly
+server: shinyapps.io
+appId: 127393
+bundleId: 566901
+url: https://michelly.shinyapps.io/Problema4Checkpoint3/
+when: 1474699308.1018
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: data/rates0..5.csv
