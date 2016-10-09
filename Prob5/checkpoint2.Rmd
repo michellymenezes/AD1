@@ -1,0 +1,51 @@
+---
+title: "Problema 5 - Checkpoint 2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+library(GGally)
+library(pscl)
+library(dplyr, warn.conflicts = FALSE)
+library(broom)
+
+```
+
+Para esta análise, estaremos usando dados relacionados a encontros relâmpagos de 4 minutos e que envolveram um total de 310 americanos. Os dados originais foram coletados por professores da Columbia Business School, a versão aqui utlizada possui apenas as colunas de interesse para o modelo a ser utilizado na análise. 
+
+Em resumo, os participantes tinham vários encontros de 4 minutos e após cada um deles, uma ficha era preenchida avaliando aqueles com quem se encontraram. Cada linha nos dados representa um desses encontros.
+
+```{r}
+data = read.csv("speed-dating.csv")
+data = data.frame(data$iid, data$gender, data$race, data$samerace, data$attr, data$reading, data$museums, data$art, data$concerts, data$shar, data$like, data$prob, data$intel3_s)
+names(data) <- c("id", "gender", "race", "sameRace", "attr", "reading", "museums", "art", "concerts", "shar", "like", "prob", "selfIntel")
+```
+
+```{r,  warning=FALSE}
+womenLike = subset(data, data$gender == 0)
+menLike = subset(data, data$gender == 1)
+summary(data)
+head(data)
+
+ggplot(womenLike, aes(womenLike$attr, womenLike$like)) +  geom_point(alpha = 0.1, position = position_jitter(width = 0.5))
+
+
+ggplot(menLike, aes(menLike$attr, menLike$like)) +  geom_point(alpha = 0.1, position = position_jitter(width = 0.5))
+
+womenLikeMod = lm(like ~ attr, data = womenLike)
+summary(womenLikeMod)
+confint(womenLikeMod)
+tidy(womenLikeMod, conf.int = TRUE)
+
+menLikeMod = lm(like ~ attr, data = menLike)
+summary(menLikeMod)
+confint(menLikeMod)
+tidy(menLikeMod, conf.int = TRUE)
+```
+
+```{r}
+
+```
