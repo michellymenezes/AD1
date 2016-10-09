@@ -14,27 +14,44 @@ library(broom)
 
 ```
 
-Para esta análise, estaremos usando dados relacionados a encontros relâmpagos de 4 minutos e que envolveram um total de 310 americanos. Os dados originais foram coletados por professores da Columbia Business School, a versão aqui utlizada possui apenas as colunas de interesse para o modelo a ser utilizado na análise. 
+Neste checkpoint serão respondidas duas perguntas a partir de análise de regressão. A análise será feita com objetivo de mostrar se uma váriável, por exemplo, tem ou não influência significativa no valor de outra.
+
+Para esta análise, estaremos usando dados com 5000 linhas relacionados a encontros relâmpagos de 4 minutos e que envolveram um total de 310 americanos. Os dados originais foram coletados por professores da Columbia Business School, a versão aqui utlizada possui apenas as colunas de interesse para o modelo a ser utilizado na análise. 
 
 Em resumo, os participantes tinham vários encontros de 4 minutos e após cada um deles, uma ficha era preenchida avaliando aqueles com quem se encontraram. Cada linha nos dados representa um desses encontros.
+
 
 ```{r}
 data = read.csv("speed-dating.csv")
 data = data.frame(data$iid, data$gender, data$race, data$samerace, data$attr, data$reading, data$museums, data$art, data$concerts, data$shar, data$like, data$prob, data$intel3_s)
 names(data) <- c("id", "gender", "race", "sameRace", "attr", "reading", "museums", "art", "concerts", "shar", "like", "prob", "selfIntel")
-```
 
-```{r,  warning=FALSE}
-womenLike = subset(data, data$gender == 0)
-menLike = subset(data, data$gender == 1)
-summary(data)
 head(data)
 
-ggplot(womenLike, aes(womenLike$attr, womenLike$like)) +  geom_point(alpha = 0.1, position = position_jitter(width = 0.5))
+```
 
+## Notas em Likes x Notas em Atração
 
-ggplot(menLike, aes(menLike$attr, menLike$like)) +  geom_point(alpha = 0.1, position = position_jitter(width = 0.5))
+Dentre as categorias a serem preenchidas na fichas duas delas são nota em Like e nota em atração. A primeira é referente a quanto a pessoa gostou (no geral) do candidato com quem acabou de se ter um encontro, podendo esta nota variar de 0 a 10. A segunda é referente ao quão atraente o candidato será avaliado, podendo também variar de 0 a 10.
 
+A partir dessas duas variáveis, **queremos saber se a nota atribuída para atração tem influência significativa na nota atribuída para o "Like" e se há diferença quando analisamos para quando homens e mulheres atribuem essas notas separadamente**.
+
+Para isso, separamos um dataframe para cada gênero em que pessoas do sexo feminino são identificadas por 0 e pessoas do sexo masculino são ideintificadas por 1.
+
+```{r}
+womenLike = subset(data, data$gender == 0)
+menLike = subset(data, data$gender == 1)
+```
+
+Após isso, podemos ter uma visão geral de como essas duas variáveis se comportam juntas para cada grupo. É possível identificar manchas mais escuras no gráfico, elas representam áreas em que a ocorrênncia é mais frequente.
+
+``` {r,  warning=FALSE}
+ggplot(womenLike, aes(womenLike$attr, womenLike$like)) +  geom_point(alpha = 0.1, position = position_jitter(width = 0.5), color="purple4") + labs(title="Avaliações por pessoas do sexo feminino", x= "Nota em atração", y="Nota em Like")
+
+ggplot(menLike, aes(menLike$attr, menLike$like)) +  geom_point(alpha = 0.1, position = position_jitter(width = 0.5), color="springgreen4") + labs(title="Avaliações por pessoas do sexo masculino", x= "Nota em atração", y="Nota em Like")
+```
+
+```{r}
 womenLikeMod = lm(like ~ attr, data = womenLike)
 summary(womenLikeMod)
 confint(womenLikeMod)
