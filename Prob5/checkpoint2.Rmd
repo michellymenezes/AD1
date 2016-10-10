@@ -7,11 +7,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 library(ggplot2)
-library(GGally)
 library(pscl)
 library(dplyr, warn.conflicts = FALSE)
 library(broom)
-
+library(modelr)
 ```
 
 Neste checkpoint serão respondidas duas perguntas a partir de análise de regressão. A análise será feita com objetivo de mostrar se uma váriável, por exemplo, tem ou não influência significativa no valor de outra.
@@ -43,72 +42,76 @@ womenLike = subset(data, data$gender == 0)
 menLike = subset(data, data$gender == 1)
 ```
 
-Após isso, podemos ter uma visão geral de como essas duas variáveis se comportam juntas para cada grupo. É possível identificar manchas mais escuras no gráfico, elas representam áreas em que a ocorrênncia é mais frequente.
+Após isso, podemos ter uma visão geral de como essas duas variáveis se comportam juntas para cada grupo. É possível identificar manchas mais escuras no gráfico, elas representam áreas em que a ocorrênncia é mais frequente. Dados incompletos são desconsiderados para o modelo.
 
 ``` {r,  warning=FALSE}
-ggplot(womenLike, aes(womenLike$attr, womenLike$like)) +
+
+ggplot(data, aes(data$attr, data$like)) +
   geom_point(alpha = 0.1, position = position_jitter(width = 0.3), color="purple4") +
-  labs(title="Avaliações por pessoas do sexo feminino", x= "Nota em atração", y="Nota em Like")
-
-
-ggplot(menLike, aes(menLike$attr, menLike$like)) +
-  geom_point(alpha = 0.1, position = position_jitter(width = 0.3), color="springgreen4") +
-  labs(title="Avaliações por pessoas do sexo masculino", x= "Nota em atração", y="Nota em Like")
-
-
+  labs(title="Avaliações por pessoas após um encontro", x= "Nota em atração", y="Nota em Like") +
+  facet_grid(gender ~ ., scales = "free", space = "free")
 ```
 
 Podemos agora definir um modelo de regressão linear para cada grupo de maneira que seja possível descobrir a quantidade de influência que a nota de atração exere sobre a nota de like. Podemos então traçar uma linha de regressão em ambos os gráficos com objetivo de de obter os valores previstos através do modelo
 ```{r,  warning=FALSE}
+dataLikeMod = lm(like ~ attr, data = data)
+
+ggplot(data, aes(data$attr, data$like)) +  
+  geom_point(alpha = 0.1, position = position_jitter(width = 0.3), color="purple4") + 
+  labs(title="Previsão do modelo", x= "Nota em atração", y="Nota em Like") +  
+  geom_line(aes(y = predict(dataLikeMod, data)), colour = "red") +
+  facet_grid(gender ~ ., scales = "free", space = "free")
+
 womenLikeMod = lm(like ~ attr, data = womenLike)
 menLikeMod = lm(like ~ attr, data = menLike)
-
-ggplot(womenLike, aes(womenLike$attr, womenLike$like)) +  geom_point(alpha = 0.1, position = position_jitter(width = 0.3), color="purple4") + 
-  labs(title="Previsão do modelo para grupo do sexo feminino", x= "Nota em atração", y="Nota em Like") +  
-  geom_line(aes(y = predict(womenLikeMod, womenLike)), colour = "red")
-
-ggplot(menLike, aes(menLike$attr, menLike$like)) +  
-  geom_point(alpha = 0.1, position = position_jitter(width = 0.3), color="springgreen4") +
-  labs(title="Previsão do modelo para grupo do sexo masculino", x= "Nota em atração", y="Nota em Like") + 
-  geom_line(aes(y = predict(menLikeMod, menLike)), colour = "red")
-
 ``` 
 
-Tendo computado os valores previsto, é possível agora visualizar os resíduos do modelo. 
+Tendo computado os valores previsto, é possível agora visualizar os resíduos do modelo. Em um bom modelo, resíduos não apresentam tedências, eles geralmente estão dispostos de maneira aleatória, sugerindo uma boa captura por parte do modelo.
 
 
 ``` {r,  warning=FALSE}
 ggplot(womenLikeMod, aes(attr, .resid)) + 
   labs(title="Resíduos do modelo para grupo do sexo feminino", x= "Nota em atração", y="Resíduos") +
-  geom_point(alpha = 0.1, color="purple4") +
+  geom_point(alpha = 0.1, color="springgreen4") +
   geom_hline(yintercept = 0, colour = "blue")
-
-
-ggplot(womenLikeMod, aes(.resid)) + labs(title="Frequência de resíduos para grupo do sexo feminino", x= "Resíduo", y="Frequência") + 
-  geom_freqpoly(binwidth = 0.5) 
-
 
 ggplot(menLikeMod, aes(attr, .resid)) +
    labs(title="Resíduos do modelo para grupo do sexo masculino", x= "Nota em atração", y="Resíduos") + 
   geom_point(alpha = 0.1, color="springgreen4") + 
   geom_hline(yintercept = 0, colour = "blue")
+```
+
+Nos exemplos acima, não fica muito claro onde está posicionada a maioria do resíduos. Logo esbaixo está um gráfico que apresenta a frequência em cada um dos grupos. É possível identificar que para o grupo do sexo feminino a maioria dos resíduos estão em torno de 0, com valores entre -1 e 1. Para o grupo do sexo masculino, reparamos que a concentração de resíduos é maior no valor 0 quando comparado com o outro grupo, mas que valores que se aproximam de 0 ainda apresentam maior frequência.
+
+``` {r}
+
+ggplot(womenLikeMod, aes(.resid)) + labs(title="Frequência de resíduos para grupo do sexo feminino", x= "Resíduo", y="Frequência") + 
+  geom_freqpoly(binwidth = 0.5) 
 
 ggplot(menLikeMod, aes(.resid)) + labs(title="Frequência de resíduos para grupo do sexo masculino", x= "Resíduo", y="Frequência") + 
   geom_freqpoly(binwidth = 0.5) 
-
-summary(womenLikeMod)
-confint(womenLikeMod)
-tidy(womenLikeMod, conf.int = TRUE)
-
-
-summary(menLikeMod)
-confint(menLikeMod)
-tidy(menLikeMod, conf.int = TRUE)
 ```
-## Notas em Likes x Notas em Interesses e Hobbies em comum
 
+Agora que temos uma ideia visual de como se comporta o modelo e seus resíduos, vamos recuperar dados referentes ao modelo de cada grupo.
+
+Primeiro para o grupo do sexo feminino. Avaliando os dados de intervalo de confiança (conf.low e conf.high) vemos que o intervalo desses valores não incluem o valor 0, podendo concluir que a variável "attr" possui influência significativa no valor de Like (a mesma informação podemos concluir a partir do p-valor, por ser suficientemente pequeno). Com magnitude apresentada de 0.65744, esse valor representa a força de correlação (quanto mais próximo do valor -1 ou 1, melhor), mostrando que há uma correlação positiva. O valor de R-quadrado é referente ao quando o modelo formulado explica a variável em questão, podemos dizer então que esse modelo, para pessoas do sexo feminino, explica cerca de 46.4% do valor da variável like.
+```{r}
+tidy(womenLikeMod, conf.int = TRUE)
+summary(womenLikeMod)
+```
+
+Nos voltamos agora para o grupo do sexo masculino. O intervalo de confiança também não inclui o valor 0, mostrando que a variável "attr" possui influência significativa no valor de Like (o p-valor, por ser suficientemente pequeno, também indica isso). Com magnitude apresentada de 0.6145953, o coeficiente apresenta correlação positiva. O valor de R-quadrado nos permite concluir que esse modelo, para pessoas do sexo masculino, explica cerca de 42.5% do valor da variável like.
+```{r}
+tidy(menLikeMod, conf.int = TRUE)
+summary(menLikeMod)
+```
+
+Fazendo uma comparação geral entre os dois grupos afirmamos que, a partir do modelo, para pessoas do sexo feminino, a avaliação para atração explica mais a nota em like se comparada com o segundo grupo.
+
+
+##
 
 
 ```{r}
-uniqueId =  as.data.frame(unique(data$id))
+
 ```
