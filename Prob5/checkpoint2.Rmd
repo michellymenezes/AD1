@@ -93,7 +93,7 @@ ggplot(menLikeMod, aes(.resid)) + labs(title="Frequência de resíduos para grup
 
 Agora que temos uma ideia visual de como se comporta o modelo e seus resíduos, vamos recuperar dados referentes ao modelo de cada grupo.
 
-Primeiro para o grupo do sexo feminino. Avaliando os dados de intervalo de confiança (conf.low e conf.high) vemos que o intervalo desses valores não incluem o valor 0, podendo concluir que a variável "attr" possui influência significativa no valor de Like (a mesma informação podemos concluir a partir do p-valor, por ser suficientemente pequeno). Com magnitude apresentada de 0.65744, esse valor representa a força de correlação (quanto mais próximo do valor -1 ou 1, melhor), mostrando que há uma correlação positiva. O valor de R-quadrado é referente ao quando o modelo formulado explica a variável em questão, podemos dizer então que esse modelo, para pessoas do sexo feminino, explica cerca de 46.4% do valor da variável like.
+Primeiro para o grupo do sexo feminino. Avaliando os dados de intervalo de confiança (conf.low e conf.high) vemos que o intervalo desses valores não incluem o valor 0, podendo concluir que a variável "attr" possui influência significativa no valor de Like (a mesma informação podemos concluir a partir do p-valor, por ser suficientemente pequeno). Com magnitude apresentada de 0.65744, esse valor representa a força de correlação (quanto mais próximo do valor -1 ou 1, melhor), mostrando que há uma correlação positiva. O valor de R-quadrado é referente ao quanto o modelo formulado explica a variável em questão, podemos dizer então que esse modelo, para pessoas do sexo feminino, explica cerca de 46.4% do valor da variável like.
 
 ```{r}
 tidy(womenLikeMod, conf.int = TRUE)
@@ -145,6 +145,10 @@ ggplot(dataProbMod, aes(shar, .resid)) +
 ggplot(dataProbMod, aes(.resid)) + labs(title="Frequência de resíduos", x= "Resíduo", y="Frequência") + 
   geom_freqpoly(binwidth = 0.5, color="darkcyan") 
 ```
+
+Assim como no modelo anterior, faremos a mesma interpretação para outros dados pertencentes ao modelo.
+
+Sobre o intervalo de confiança, este é definido por 0.4386388:0.4923304 e não inclui o valor 0, concluímos que a variável "shar" possui influência significativa no valor de prob (o p-valor por ser suficientemente pequeno também confirma essa conclusão). Com valor de magnitude igual a 0.46548, dizemos que há alguma correlação a respeito da variável independente e que a mesma é positiva, pois seu valor é maior que 0. O valor de R-quadrado referente indica que o modelo formulado explica em 21.39% a variável em questão (probabilidade de reencontro).
 
 ```{r}
 tidy(dataProbMod, conf.int = TRUE)
