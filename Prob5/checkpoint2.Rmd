@@ -19,11 +19,10 @@ Para esta análise, estaremos usando dados com 5000 linhas relacionados a encont
 
 Em resumo, os participantes tinham vários encontros de 4 minutos e após cada um deles, uma ficha era preenchida avaliando aqueles com quem se encontraram. Cada linha nos dados representa um desses encontros.
 
-
 ```{r}
 data = read.csv("speed-dating.csv")
-data = data.frame(data$iid, data$gender, data$attr, data$reading, data$museums, data$art, data$concerts, data$shar, data$like, data$prob, data$intel3_s)
-names(data) <- c("id", "gender", "attr", "reading", "museums", "art", "concerts", "shar", "like", "prob", "selfIntel")
+data = data.frame(data$gender, data$attr, data$shar, data$like, data$prob)
+names(data) <- c("gender", "attr", "shar", "like", "prob")
 
 head(data)
 
@@ -52,7 +51,8 @@ ggplot(data, aes(data$attr, data$like)) +
   facet_grid(gender ~ ., scales = "free", space = "free")
 ```
 
-Podemos agora definir um modelo de regressão linear para cada grupo de maneira que seja possível descobrir a quantidade de influência que a nota de atração exere sobre a nota de like. Podemos então traçar uma linha de regressão em ambos os gráficos com objetivo de de obter os valores previstos através do modelo
+Podemos agora definir um modelo de regressão linear para cada grupo de maneira que seja possível descobrir a quantidade de influência que a nota de atração exerce sobre a nota de like. Podemos então traçar uma linha de regressão em ambos os gráficos com objetivo de de obter os valores previstos através do modelo.
+
 ```{r,  warning=FALSE}
 dataLikeMod = lm(like ~ attr, data = data)
 
@@ -67,7 +67,6 @@ menLikeMod = lm(like ~ attr, data = menLike)
 ``` 
 
 Tendo computado os valores previsto, é possível agora visualizar os resíduos do modelo. Em um bom modelo, resíduos não apresentam tedências, eles geralmente estão dispostos de maneira aleatória, sugerindo uma boa captura por parte do modelo.
-
 
 ``` {r,  warning=FALSE}
 ggplot(womenLikeMod, aes(attr, .resid)) + 
@@ -86,32 +85,68 @@ Nos exemplos acima, não fica muito claro onde está posicionada a maioria do re
 ``` {r}
 
 ggplot(womenLikeMod, aes(.resid)) + labs(title="Frequência de resíduos para grupo do sexo feminino", x= "Resíduo", y="Frequência") + 
-  geom_freqpoly(binwidth = 0.5) 
+  geom_freqpoly(binwidth = 0.5, color="springgreen4") 
 
 ggplot(menLikeMod, aes(.resid)) + labs(title="Frequência de resíduos para grupo do sexo masculino", x= "Resíduo", y="Frequência") + 
-  geom_freqpoly(binwidth = 0.5) 
+  geom_freqpoly(binwidth = 0.5, color="springgreen4") 
 ```
 
 Agora que temos uma ideia visual de como se comporta o modelo e seus resíduos, vamos recuperar dados referentes ao modelo de cada grupo.
 
 Primeiro para o grupo do sexo feminino. Avaliando os dados de intervalo de confiança (conf.low e conf.high) vemos que o intervalo desses valores não incluem o valor 0, podendo concluir que a variável "attr" possui influência significativa no valor de Like (a mesma informação podemos concluir a partir do p-valor, por ser suficientemente pequeno). Com magnitude apresentada de 0.65744, esse valor representa a força de correlação (quanto mais próximo do valor -1 ou 1, melhor), mostrando que há uma correlação positiva. O valor de R-quadrado é referente ao quando o modelo formulado explica a variável em questão, podemos dizer então que esse modelo, para pessoas do sexo feminino, explica cerca de 46.4% do valor da variável like.
+
 ```{r}
 tidy(womenLikeMod, conf.int = TRUE)
 summary(womenLikeMod)
 ```
 
 Nos voltamos agora para o grupo do sexo masculino. O intervalo de confiança também não inclui o valor 0, mostrando que a variável "attr" possui influência significativa no valor de Like (o p-valor, por ser suficientemente pequeno, também indica isso). Com magnitude apresentada de 0.6145953, o coeficiente apresenta correlação positiva. O valor de R-quadrado nos permite concluir que esse modelo, para pessoas do sexo masculino, explica cerca de 42.5% do valor da variável like.
+
 ```{r}
 tidy(menLikeMod, conf.int = TRUE)
 summary(menLikeMod)
 ```
 
-Fazendo uma comparação geral entre os dois grupos afirmamos que, a partir do modelo, para pessoas do sexo feminino, a avaliação para atração explica mais a nota em like se comparada com o segundo grupo.
+Apesar de bastante semelhantes, fazendo uma comparação geral entre os dois grupos afirmamos que, a partir do modelo, para pessoas do sexo feminino, a avaliação para atração explica mais a nota em like se comparada com o segundo grupo.
 
+## Notas em Probabilidade de novo encontro x Notas em interesses em comum
 
-##
+Agora temos voltamos o interesse para duas outras variáveis: prob e shar. A primeria é uma nota que o participante dá, referente a sua opinião sobre a probabilidade que a pessoa com quem acabou de se encontrar tem de querer repetir o encontro no futuro. A segunda variável é uma nota referente a quanto o participante acha que ele e a pessoa com quem acabou de se encontrar compartilham interesses e hobbies. Ambas variáveis variam de 1 a 10.
 
+**Queremos desenvolver um modelo para saber se a nota atribuída a compartilhamento de interesses tem influência significativa na nota atribuída para o probabilidade de reencontro**.
+
+Antes, uma breve visualização de como essas duas variáveis se comportam juntas. Assim como no exemplo anterior, áreas com valores de maior frequência são identficadas por manchas mais escuras e dados incompletos são desconsiderados.
+
+```{r, warning=FALSE}
+ggplot(data, aes(data$shar, data$prob)) +
+  geom_point(alpha = 0.1, position = position_jitter(width = 0.3), color="indianred3") +
+  labs(title="Avaliações em possibilidade e compatilhamento após um encontro", x= "Nota em interesses compartilhados", y="Nota em probabilidade de reencontro")
+```
+
+Abaixo definimos um modelo de regressão linear afim de descobrir a quantidade de influência que a nota de compartilhamento de interesses exerce sobre a nota de possibilidade de reencontro. Traçamos uma linha de regressão no gráfico anterior com objetivo de de obter os valores previstos através do modelo.
+
+```{r, warning=FALSE}
+dataProbMod = lm(prob ~ shar, data = data)
+
+ggplot(data, aes(data$shar, data$prob)) +  
+  geom_point(alpha = 0.1, position = position_jitter(width = 0.3), color="indianred3") + 
+  labs(title="Previsão do modelo", x= "Nota em interesses compartilhados", y="Nota em probabilidade de reencontro") +  
+  geom_line(aes(y = predict(dataProbMod, data)), colour = "red")
+```
+
+Abaixo possível agora visualizar os resíduos do modelo e, assim como no exemplo anterior, plotamos também um gráfico com a frequência desses resíduos. Não é apresentada visualmente nenhuma tendência significantemente maior para um dos lados qunado comparados. Identificamos que é no valor 0 que há uma maior frequência de resíduos. Além disso, a forma visualizada na frequência lembra uma distribuição normal, o que é considerado um bom indicativo em análise de resíduos.
 
 ```{r}
+ggplot(dataProbMod, aes(shar, .resid)) + 
+  labs(title="Resíduos do modelo", x= "Nota em interesses compartilhados", y="Resíduos") +
+  geom_point(alpha = 0.1, color="darkcyan") +
+  geom_hline(yintercept = 0, colour = "blue")
 
+ggplot(dataProbMod, aes(.resid)) + labs(title="Frequência de resíduos", x= "Resíduo", y="Frequência") + 
+  geom_freqpoly(binwidth = 0.5, color="darkcyan") 
+```
+
+```{r}
+tidy(dataProbMod, conf.int = TRUE)
+summary(dataProbMod)
 ```
