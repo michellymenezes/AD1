@@ -1,0 +1,15 @@
+---
+title: "Problema 5 - Checkpoint 3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr, warn.conflicts = FALSE)
+
+```
+
+```{r}
+date = read.csv("speed-dating2.csv")
+```
