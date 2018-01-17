@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Prob 1 - Checkpoint 2</title>
+    <meta name="description" content="Resultados dos laboratórios da disciplina.
+">
+
+    <link rel="stylesheet" href="/AD2/css/main.css">
+    <link rel="canonical" href="http://yourdomain.com/AD2/2018/01/prob-1-checkpoint-2.html">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/AD2/">Análise de Dados 1</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/AD2/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Prob 1 - Checkpoint 2</h1>
+    <p class="post-meta">Jan 17, 2018</p>
+  </header>
+
+  <article class="post-content">
+    <h2 id="despesas-parlamentares">Despesas parlamentares</h2>
+
+<p>Os parlamentares eleitos no Brasil possuem uma cota mensal destinada a reembolsá-los por diversos gastos relacionados ao trabalho que exercem. Essa cota varia de acordo com o estado ao qual o parlamentar foi eleito.</p>
+
+<h3 id="analisando-dados-relacionados-a-alimentao">Analisando dados relacionados a alimentação</h3>
+
+<p>As despesas são classificadas em diferentes categorias. Neste tópico do documento, vamos avaliar aquelas despesas classificadas como “Fornecimento de alimentação do parlamentar”.</p>
+
+<p>No gráfico abaixo, podemos observar, de um modo geral, todos os gastos relacionados a esta categoria e como eles estão distribuídos de acordo com seus valores líquidos em que cada ponto representa um gasto. Podemos também calcular a mediana e moda para mais detalhes.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">require</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Carregando pacotes exigidos: ggplot2</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">gastos</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.table</span><span class="p">(</span><span class="s2">"ano-atual.csv"</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">","</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">)</span><span class="w">
+
+</span><span class="n">despesasAlimentares</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">subset</span><span class="p">(</span><span class="n">gastos</span><span class="p">,</span><span class="w"> </span><span class="n">txtDescricao</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"FORNECIMENTO DE ALIMENTAÇÃO DO PARLAMENTAR"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">despesasAlimentares</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">txtDescricao</span><span class="p">,</span><span class="w"> </span><span class="n">vlrLiquido</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_point</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position_jitter</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.3</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="s2">"maroon4"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD2figure/source/prob-1-checkpoint-2/2018-01-17-prob-1-checkpoint-2/unnamed-chunk-1-1.png" alt="plot of chunk unnamed-chunk-1" /></p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">Moda</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">ux</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">unique</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">
+  </span><span class="n">ux</span><span class="p">[</span><span class="n">which.max</span><span class="p">(</span><span class="n">tabulate</span><span class="p">(</span><span class="n">match</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">ux</span><span class="p">)))]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">median</span><span class="p">(</span><span class="n">despesasAlimentares</span><span class="o">$</span><span class="n">vlrLiquido</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## [1] 46.76</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">Moda</span><span class="p">(</span><span class="n">despesasAlimentares</span><span class="o">$</span><span class="n">vlrLiquido</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## [1] 55.09</code></pre></figure>
+
+<p>A mediana mostra a centralidade dos valores, o valor central é 46,76. Já a moda mostra qual o valor mais frequente em que nesse caso é 55,09. A maioria dos valores estão concentrados abaixo de 500 e é possível observar uma segunda concentração por volta dos 700. Há alguns pontos extremos que estão muito distantes de onde a maioria deles se encontram, chegando a atingir um valor maior que 5000. Para quem analisa, é sugerido que tente entender porque esses dados se comportam assim. Podemos investigar um pouco mais mudando o ponto de vista: vamos agrupar as despesas por estados e por partido para observar como os gastos se distribuem através dessas novas perspectivas.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggplot</span><span class="p">(</span><span class="n">despesasAlimentares</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">sgUF</span><span class="p">,</span><span class="w"> </span><span class="n">vlrLiquido</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position_jitter</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.3</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="s2">"slateblue4"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">coord_flip</span><span class="p">()</span></code></pre></figure>
+
+<p><img src="/AD2figure/source/prob-1-checkpoint-2/2018-01-17-prob-1-checkpoint-2/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" /></p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggplot</span><span class="p">(</span><span class="n">despesasAlimentares</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">sgPartido</span><span class="p">,</span><span class="w"> </span><span class="n">vlrLiquido</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position_jitter</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.3</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="s2">"goldenrod4"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">coord_flip</span><span class="p">()</span></code></pre></figure>
+
+<p><img src="/AD2figure/source/prob-1-checkpoint-2/2018-01-17-prob-1-checkpoint-2/unnamed-chunk-2-2.png" alt="plot of chunk unnamed-chunk-2" /></p>
+
+<p>Podemos agora reparar os estados que apresetam mais desses valores muito diferentes como, por exemplo, Paraná, Pará e Maranhão. No outro gráfico, podemos observar o mesmo fenômeno em partidos como PSDB, PSD e PPS. O padrão do gráfico geral permanece o mesmo nos dois novos gerados: a maioria das despesas são referentes a valores abaixo de 500.</p>
+
+<p>É possível notar em ambos os gráficos a presença de uma variável nomeada “NA”, ela representa as despesas relacionadas a alimentação que tiveram seus valores registrados, mas não possuem estado e partido definidos em seus respectivos gráficos. É sugerido que se investigue a quem esses gastos estão relacionados. Para isso, analisamos somente somente as despesas relacionadas a essa variável e verificamos a quais parlamentares ela estão associadas.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">missingValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subset</span><span class="p">(</span><span class="n">despesasAlimentares</span><span class="p">,</span><span class="w"> </span><span class="nf">is.na</span><span class="p">(</span><span class="n">despesasAlimentares</span><span class="o">$</span><span class="n">sgUF</span><span class="p">))</span><span class="w">
+
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">missingValues</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">txNomeParlamentar</span><span class="p">,</span><span class="w"> </span><span class="n">vlrLiquido</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">  </span><span class="n">geom_boxplot</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_point</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position_jitter</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.3</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="s2">"seagreen4"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">coord_flip</span><span class="p">()</span></code></pre></figure>
+
+<p><img src="/AD2figure/source/prob-1-checkpoint-2/2018-01-17-prob-1-checkpoint-2/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3" /></p>
+
+<p>Podemos notar que os valores estão associados a seis partidos diferentes. A linhas desenhadas no meio de cada retângulo no gráfico mostra onde está localizada a mediana. A partir disto podemos observar que não há um padrão: ela está em alguns casos no meio, deixando a representação simétrica e em outros mais nos extremos, deixando assimétrica. Comparando esse gráfico com o que mostra os gastos de cada partido podemos observar algo interessante, o PT que antes não apresentava valores muito variantes agora é o que possui o valor mais alto e desigual!</p>
+
+<h3 id="analisando-despesas-totais">Analisando despesas totais</h3>
+<p>As depesas dos parlamentares são classificadas em tipos. Abaixo podemos visualizar um gráfico em barras que mostra a soma dos valores líquidos em cada tipo de despesa.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">gastoPorTipo</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">aggregate</span><span class="p">(</span><span class="n">vlrLiquido</span><span class="o">~</span><span class="n">txtDescricao</span><span class="p">,</span><span class="w"> </span><span class="n">gastos</span><span class="p">,</span><span class="w"> </span><span class="n">sum</span><span class="p">)</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">gastoPorTipo</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">txtDescricao</span><span class="p">,</span><span class="w"> </span><span class="n">vlrLiquido</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s2">"identity"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">coord_flip</span><span class="p">()</span></code></pre></figure>
+
+<p><img src="/AD2figure/source/prob-1-checkpoint-2/2018-01-17-prob-1-checkpoint-2/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" /></p>
+
+<p>A partir dele é possível concluir que os parlamentares gastam mais recursos de suas cotas em despesas classificadas como “Divulgação de atividade parlamentar”.</p>
+
+<p>Logo abaixo, temos um gráfico exibindo como cada despesa dessas categorias estão distribuiídas. Quanto mais longa a linha formada pelos pontos, maior a variação nos valores das despepesas referentes a um determinado tipo.
+Podemos observar que “Divulgação de atividade parlamentar” possui valores que variam muito, assim como outros tipos de despesa como “Serviços postais”, “Locação ou fretamento de aeronaves” e “Consutorias, pesquisas e trabalhos técnicos”.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggplot</span><span class="p">(</span><span class="n">gastos</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">txtDescricao</span><span class="p">,</span><span class="w"> </span><span class="n">vlrLiquido</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_point</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position_jitter</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">coord_flip</span><span class="p">()</span></code></pre></figure>
+
+<p><img src="/AD2figure/source/prob-1-checkpoint-2/2018-01-17-prob-1-checkpoint-2/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" /></p>
+
+  </article>
+
+</div>
+
+
+
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Análise de Dados 1</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>Análise de Dados 1</li>
+          <li><a href="mailto:martha.menezes@ccc.ufcg.edu.br">martha.menezes@ccc.ufcg.edu.br</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/michellymenezes">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">michellymenezes</span>
+            </a>
+          </li>
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Resultados dos laboratórios da disciplina.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
