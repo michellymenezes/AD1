@@ -39,13 +39,13 @@ despesaAerea <- subset(gastos, txtDescricao == "Emissão Bilhete Aéreo")
 ggplot(despesaHospedagem, aes(sgUF, fill=sgUF == "DF")) + labs(title="Gastos com hospedagem", x="Estados", y="Frequência de gastos") + geom_bar() + guides(fill=FALSE)+ coord_flip()
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-1](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-1-1.png)
+![plot of chunk unnamed-chunk-1](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-1-1.png)
 
 {% highlight r %}
 ggplot(despesaAerea, aes(sgUF, fill=sgUF == "DF")) + labs(title="Gastos com emissão de bilhete aéreo", x="Estados", y="Frequência de gastos") + geom_bar() + guides(fill=FALSE)+ coord_flip()
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-1](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-1-2.png)
+![plot of chunk unnamed-chunk-1](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-1-2.png)
 
 É possível notar que, em ambos os gráficos, existem despesas efetuadas parlamentares do DF. Porém, esse número se torna insignificante quando comparado com a quantidade de vezes que os outros estados utilizaram do mesmo serviço. Enquanto os valores relacionados aos DF se aproximam de zero, outros estados chegaram a gastar com hospedagem mais de 300 vezes e com bilhete aéreo quase 5 mil vezes.
 
@@ -62,7 +62,7 @@ ggplot(despesaHospedagem, aes(sgUF, vlrLiquido)) +  geom_point(position = positi
 ## Warning: Removed 5 rows containing missing values (geom_point).
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-2](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-2-1.png)
+![plot of chunk unnamed-chunk-2](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-2-1.png)
 
 {% highlight r %}
 median(despesaHospedagem$vlrLiquido)
@@ -80,7 +80,7 @@ median(despesaHospedagem$vlrLiquido)
 ggplot(despesaAerea, aes(sgUF, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaAerea$sgUF == "DF",'darkturquoise','coral1')) + labs(title="Gastos com emissão de bilhete aéreo",x= "Estado", y="Valor do bilhete em R$") + coord_flip()
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-2](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-2-2.png)
+![plot of chunk unnamed-chunk-2](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-2-2.png)
 
 {% highlight r %}
 median(despesaAerea$vlrLiquido)
@@ -106,7 +106,7 @@ despesaTerceiros <- subset(despesaAerea, txtPassageiro != txNomeParlamentar)
 ggplot(despesaTerceiros, aes(vlrGlosa, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaTerceiros$vlrGlosa > 0,'seagreen4','slateblue4')) + labs(title="Bilhetes aéreos e glosa de terceiros",x= "Glosa", y="Valor do bilhete em R$")
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-3](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-3-1.png)
+![plot of chunk unnamed-chunk-3](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-3-1.png)
 
 {% highlight r %}
 median(despesaTerceiros$vlrLiquido)
@@ -127,7 +127,7 @@ Se fizermos a mesma análise englobando todos os bilhetes aéreos emitidos temos
 ggplot(despesaAerea, aes(vlrGlosa, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaAerea$vlrGlosa > 0,'maroon4','slateblue4')) + labs(title="Bilhetes aéreos e glosa globais", x= "Glosa", y="Valor do bilhete em R$")
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-4](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-4-1.png)
+![plot of chunk unnamed-chunk-4](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-4-1.png)
 
 {% highlight r %}
 median(despesaAerea$vlrLiquido)
@@ -152,7 +152,7 @@ Além dos bilhetes aéreos emitidos, nós queremos observar ser respectivos trec
 ggplot(despesaAerea, aes(txtDescricao, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(!grepl("BSB", despesaAerea$txtTrecho),'deeppink','thistle')) + labs(title="Bilhetes aéreos de trechos além de BSB", x="", y="Valor do bilhete em R$")
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-5](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-5](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-5-1.png)
 
 Com o propósito de melhorar nossa comparação, vamos ver também a quantide de emitidos quando colocados lado a lado. Novamente, a barra rosa em destaque representa os trechos que não incluem o aeroporto de Brasília.
 
@@ -162,7 +162,7 @@ Com o propósito de melhorar nossa comparação, vamos ver também a quantide de
 ggplot(despesaAerea, aes(txtDescricao, fill=grepl("BSB", despesaAerea$txtTrecho))) + labs(title="Emissão de bilhetes aéreos", x="", y="Frequência de emissão de blihetes aéreos") + geom_bar(position="dodge") + guides(fill=guide_legend(title = "BSB está incluso no trecho"))  +  scale_fill_manual(values=c("deeppink", "thistle"))
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-6](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-6-1.png)
+![plot of chunk unnamed-chunk-6](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-6-1.png)
 
 Apesar dos números serem muito distantes, a quantidade de bilhetes além de BSB ainda é grande, o valor está em torno de 3,000 bilhetes emitidos. Está destacado, inclusive, que uma despesa extrema registrada com valor acima de R$ 7,000.00 é referente a um trecho que não teve origem, destino ou sequer fez escala em Brasília. Podemos agora realizar a mesma distribuição somente com bilhete emitidos com intuito de beneficiar uma terceira pessoa. Segue:
 
@@ -172,13 +172,13 @@ Apesar dos números serem muito distantes, a quantidade de bilhetes além de BSB
 ggplot(despesaTerceiros, aes(txtDescricao, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(!grepl("BSB", despesaTerceiros$txtTrecho),'deeppink','thistle')) + labs(title="Bilhetes aéreos de trechos além de BSB para terceiros", x= "", y="Valor do bilhete em R$")
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-7](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-7-1.png)
+![plot of chunk unnamed-chunk-7](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-7-1.png)
 
 {% highlight r %}
 ggplot(despesaTerceiros, aes(txtDescricao, fill=grepl("BSB", despesaTerceiros$txtTrecho))) + labs(title="Frequência de terceiros em bilhetes aéreos", x="", y="Frequência de gastos") + geom_bar(position="dodge") + guides(fill=guide_legend(title = "BSB está incluso no trecho"))  +  scale_fill_manual(values=c("deeppink", "thistle"))
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-7](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-7-2.png)
+![plot of chunk unnamed-chunk-7](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-7-2.png)
 
 Como podemos observar, este caso se comporta de maneira muito semelhante ao exemplo anterior. Os números em quantidades são bem menores, mas a proporção segue o mesmo padrão, como pode ser observado no gráfico de barras. Vemos que os valores têm uma maior concentração abaixo de 1,000 e que também há alguns pontos em destaque perto dos 2,000.
 
@@ -193,7 +193,7 @@ despesaBSBOnly <- subset(despesaAerea, grepl("BSB", despesaTerceiros$txtTrecho))
 ggplot(despesaNoBSB, aes(numMes, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour=ifelse(despesaNoBSB$txtPassageiro != despesaNoBSB$txNomeParlamentar,'darkolivegreen2','mediumorchid4')) + labs(title="Bilhetes aéreos de trechos além de BSB", x= "Mês", y="Valor do bilhete em R$")
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-8](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-8-1.png)
+![plot of chunk unnamed-chunk-8](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-8-1.png)
 
 {% highlight r %}
 median(despesaNoBSB$vlrLiquido)
@@ -214,13 +214,13 @@ Para finalizar a análise dessa amostra, construímos um gráfico de barras para
 ggplot(despesaNoBSB, aes(numMes, fill=(despesaNoBSB$txtPassageiro != despesaNoBSB$txNomeParlamentar))) + labs(title="Frequencia bilhetes aéreos que não incluem BSB por mês",x= "Mês", y="Frequência de emissão de blihetes aéreos") + geom_bar(position="dodge") + guides(fill=guide_legend(title = "Passageiro é um terceiro beneficiado")) +  scale_fill_manual(values=c("mediumorchid4", "darkolivegreen2"))
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-9](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-9-1.png)
+![plot of chunk unnamed-chunk-9](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-9-1.png)
 
 {% highlight r %}
 ggplot(despesaBSBOnly, aes(numMes, fill=(despesaBSBOnly$txtPassageiro != despesaBSBOnly$txNomeParlamentar))) + labs(title="Frequencia bilhetes aéreos que incluem BSB por mês",x = "Mês", y="Frequência de emissão de blihetes aéreos") + geom_bar(position="dodge") + guides(fill=guide_legend(title = "Passageiro é um terceiro beneficiado")) +  scale_fill_manual(values=c("mediumorchid4", "darkolivegreen2"))
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-9](/AD1figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-9-2.png)
+![plot of chunk unnamed-chunk-9](/AD1/figure/source/prob-1-checkpoint-4/2018-01-17-prob-1-checkpoint-4/unnamed-chunk-9-2.png)
 
 
 Vemos que os dois gráficos apresentam comportamento muito semelhante. Em ambos os cenários, o número de emissões aumenta até o terceiro mês e então começa a diminuir, existe uma espécie de simetria. A proporção entre os tipos de passageiros também, visualmente, variam de forma parecida.

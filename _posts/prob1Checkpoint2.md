@@ -42,7 +42,7 @@ despesasAlimentares <- subset(gastos, txtDescricao == "FORNECIMENTO DE ALIMENTA�
 ggplot(despesasAlimentares, aes(txtDescricao, vlrLiquido)) + geom_point(position = position_jitter(width = .1), alpha = .3, colour="maroon4")
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-1](/AD2figure/source/prob-1-checkpoint-2/prob1Checkpoint2/unnamed-chunk-1-1.png)
+![plot of chunk unnamed-chunk-1](/AD1/figure/source/prob-1-checkpoint-2/prob1Checkpoint2/unnamed-chunk-1-1.png)
 
 {% highlight r %}
 Moda <- function(x) {
@@ -78,13 +78,13 @@ A mediana mostra a centralidade dos valores, o valor central é 46,76. Já a mod
 ggplot(despesasAlimentares, aes(sgUF, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour="slateblue4") + coord_flip()
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-2](/AD2figure/source/prob-1-checkpoint-2/prob1Checkpoint2/unnamed-chunk-2-1.png)
+![plot of chunk unnamed-chunk-2](/AD1/figure/source/prob-1-checkpoint-2/prob1Checkpoint2/unnamed-chunk-2-1.png)
 
 {% highlight r %}
 ggplot(despesasAlimentares, aes(sgPartido, vlrLiquido)) +  geom_point(position = position_jitter(width = .1), alpha = .3, colour="goldenrod4") + coord_flip()
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-2](/AD2figure/source/prob-1-checkpoint-2/prob1Checkpoint2/unnamed-chunk-2-2.png)
+![plot of chunk unnamed-chunk-2](/AD1/figure/source/prob-1-checkpoint-2/prob1Checkpoint2/unnamed-chunk-2-2.png)
 
 Podemos agora reparar os estados que apresetam mais desses valores muito diferentes como, por exemplo, Paraná, Pará e Maranhão. No outro gráfico, podemos observar o mesmo fenômeno em partidos como PSDB, PSD e PPS. O padrão do gráfico geral permanece o mesmo nos dois novos gerados: a maioria das despesas são referentes a valores abaixo de 500.
 
@@ -97,7 +97,7 @@ missingValues = subset(despesasAlimentares, is.na(despesasAlimentares$sgUF))
 ggplot(missingValues, aes(txNomeParlamentar, vlrLiquido)) +  geom_boxplot() + geom_point(position = position_jitter(width = .1), alpha = .3, colour="seagreen4") + coord_flip()
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-3](/AD2figure/source/prob-1-checkpoint-2/prob1Checkpoint2/unnamed-chunk-3-1.png)
+![plot of chunk unnamed-chunk-3](/AD1/figure/source/prob-1-checkpoint-2/prob1Checkpoint2/unnamed-chunk-3-1.png)
 
 Podemos notar que os valores estão associados a seis partidos diferentes. A linhas desenhadas no meio de cada retângulo no gráfico mostra onde está localizada a mediana. A partir disto podemos observar que não há um padrão: ela está em alguns casos no meio, deixando a representação simétrica e em outros mais nos extremos, deixando assimétrica. Comparando esse gráfico com o que mostra os gastos de cada partido podemos observar algo interessante, o PT que antes não apresentava valores muito variantes agora é o que possui o valor mais alto e desigual!
 
@@ -110,7 +110,7 @@ gastoPorTipo <- aggregate(vlrLiquido~txtDescricao, gastos, sum)
 ggplot(gastoPorTipo, aes(txtDescricao, vlrLiquido)) + geom_bar(stat="identity") + coord_flip()
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-4](/AD2figure/source/prob-1-checkpoint-2/prob1Checkpoint2/unnamed-chunk-4-1.png)
+![plot of chunk unnamed-chunk-4](/AD1/figure/source/prob-1-checkpoint-2/prob1Checkpoint2/unnamed-chunk-4-1.png)
 
 A partir dele é possível concluir que os parlamentares gastam mais recursos de suas cotas em despesas classificadas como "Divulgação de atividade parlamentar".
 
@@ -122,4 +122,4 @@ Podemos observar que "Divulgação de atividade parlamentar" possui valores que 
 ggplot(gastos, aes(txtDescricao, vlrLiquido)) + geom_point(position = position_jitter(width = .1), alpha = .3) + coord_flip()
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-5](/AD2figure/source/prob-1-checkpoint-2/prob1Checkpoint2/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-5](/AD1/figure/source/prob-1-checkpoint-2/prob1Checkpoint2/unnamed-chunk-5-1.png)
