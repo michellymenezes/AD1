@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Prob 3 - Checkpoint 1</title>
+    <meta name="description" content="Resultados dos laboratórios da disciplina.
+">
+
+    <link rel="stylesheet" href="/AD1/css/main.css">
+    <link rel="canonical" href="http://yourdomain.com/AD1/2018/01/prob-3-checkpoint-1.html">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/AD1/">Análise de Dados 1</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/AD1/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Prob 3 - Checkpoint 1</h1>
+    <p class="post-meta">Jan 18, 2018</p>
+  </header>
+
+  <article class="post-content">
+    <h2 id="emendas-para-sude-na-regio-norte">Emendas para sáude na região Norte</h2>
+
+<p>O objetivo deste documento é fazer uma breve análise a respeito de alguns dados adiquiridos sobre emendas parlamentares. Emendas são custeios requisitados por parlamentares para a execução de algum projeto. Esses projetos são destinados para uma ciadade específica e podem ser classificados em diferentes funções.</p>
+
+<p>Nesta análise, estaremos explorando dados referentes as emendas aprovadas para estados da região norte, destinadas a categoria Saúde. Logo abaixo, você pode visualizar a plotagem das emendas. O eixo y representa o valor. O eixo x representa o tempo, em dias, definidos para a realização do projeto.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggplot</span><span class="p">(</span><span class="n">norte</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">DIAS</span><span class="p">,</span><span class="w"> </span><span class="n">VALOR_REPASSE_EMENDA</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position_jitter</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.4</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Emendas para saúde na região Norte"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="w"> </span><span class="s2">"Tempo (em dias)"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s2">"Valor em R$"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1/figure/source/prob-3-checkpoint-1/2018-01-18-prob-3-checkpoint-1/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" /></p>
+
+<p>Tendo em vista que temos apenas valores numéricos como variáveis, podemos utilizar o método hierárquico para formar clusters com os pontos no gráfico. A função <em>hclust</em> foi aplicada para a construção da árvore e junto a ela o valor <strong>average</strong> para definir o método de clustering, esta calcula a distância média entre as combinações de pontos. Com ajuda do gráfico e através de uma análise visual foi decidido que os pontos serão divididos em 6 clusters - passa-se então o parâmetro 6 para <strong>h</strong> na função <em>cutree</em>. O resultado pode ser visualizado abaixo:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">d</span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dist</span><span class="p">(</span><span class="n">scale</span><span class="p">(</span><span class="n">norte.k</span><span class="p">))</span><span class="w">
+</span><span class="n">hc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">hclust</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s2">"average"</span><span class="p">)</span><span class="w">
+</span><span class="n">norte.k</span><span class="o">$</span><span class="n">cluster</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factor</span><span class="p">(</span><span class="n">cutree</span><span class="p">(</span><span class="n">hc</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="o">=</span><span class="m">6</span><span class="p">))</span><span class="w">
+
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">norte.k</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">norte.DIAS</span><span class="p">,</span><span class="w"> </span><span class="n">norte.VALOR_REPASSE_EMENDA</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cluster</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.4</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Clusters de emendas para saúde na região Norte"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="w"> </span><span class="s2">"Tempo (em dias)"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s2">"Valor em R$"</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="s2">"Clusters"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1/figure/source/prob-3-checkpoint-1/2018-01-18-prob-3-checkpoint-1/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3" /></p>
+
+<p>Visualmente falando, o agrupamento aparenta ter sido bem executado. É possível identificar pontos concentrados formando grupos em que cada grupo apresenta uma cor diferenciada. Os clusters 4, 1 e 5 são caracterizados por menores custos, mas com períodos de tempo que vão crescendo na ordem mencionada. Da mesma forma se comportam os clusters 6 e 3, mas com valores considerados intermediários se comparados com os demais. Por último, o cluster 2 é caracterizado por ser de alto custo e curto tempo.</p>
+
+<p>Podemos filtrar o primeiro gráfico de modo que alguns detalhes sejam representados. A partir deles poderemos compará-los com os agrupamentos e tirar algumas conclusões.</p>
+
+<p>Do gráfico abaixo podemos observar que os clusters 1, 3, 5, 6 possuem semelhanças por serem constituídos principalmente pela categoria  Administração Pública Municipal. O cluster 4, por outro lado, possui uma maior presença das duas outras categorias.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggplot</span><span class="p">(</span><span class="n">norte</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">DIAS</span><span class="p">,</span><span class="w"> </span><span class="n">VALOR_REPASSE_EMENDA</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NATUREZA_JURIDICA</span><span class="w"> </span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position_jitter</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.4</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Emendas para saúde na região Norte"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="w"> </span><span class="s2">"Tempo (em dias)"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s2">"Valor em R$"</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="s2">"Natureza jurídica"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1/figure/source/prob-3-checkpoint-1/2018-01-18-prob-3-checkpoint-1/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" /></p>
+
+<p>Comparando o gráfico seguinte com os clusters podemos concluir que o cluster 4 é principalmente caracterizado por investimentos que aquisição. Nos 1 e 5, apesar de heterogêneo, se destacam investimentos de ampliação, reforma, manutenção ou educação. Enquanto nos 3 e 6 estão mais presentes investimentos de construção.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggplot</span><span class="p">(</span><span class="n">norte</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">DIAS</span><span class="p">,</span><span class="w"> </span><span class="n">VALOR_REPASSE_EMENDA</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TIPO</span><span class="w"> </span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position_jitter</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.4</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Emendas para saúde na região Norte"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="w"> </span><span class="s2">"Tempo (em dias)"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s2">"Valor em R$"</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="s2">"Tipo de investimento"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1/figure/source/prob-3-checkpoint-1/2018-01-18-prob-3-checkpoint-1/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" /></p>
+
+  </article>
+
+</div>
+
+
+
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Análise de Dados 1</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>Análise de Dados 1</li>
+          <li><a href="mailto:martha.menezes@ccc.ufcg.edu.br">martha.menezes@ccc.ufcg.edu.br</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/michellymenezes">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">michellymenezes</span>
+            </a>
+          </li>
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Resultados dos laboratórios da disciplina.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

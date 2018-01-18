@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Prob 3 - Checkpoint 2</title>
+    <meta name="description" content="Resultados dos laboratórios da disciplina.
+">
+
+    <link rel="stylesheet" href="/AD1/css/main.css">
+    <link rel="canonical" href="http://yourdomain.com/AD1/2018/01/prob-3-checkpoint-2.html">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/AD1/">Análise de Dados 1</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/AD1/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Prob 3 - Checkpoint 2</h1>
+    <p class="post-meta">Jan 18, 2018</p>
+  </header>
+
+  <article class="post-content">
+    <h2 id="reduo-de--dimensionalidade">Redução de  dimensionalidade</h2>
+
+<p>Para este problema, foram escolhidas 4 variáveis, tornando os dados uma estrutura de 4 dimensões. As variáveis escolhidas foram relacionadas a categorias que parlamentares escolhem investir com emendas, sendo elas: saneamento, saúde, gestão ambiental e urbanismo. Essas categorias ocorrem ao mesmo tempo para um determinado parlamentar.</p>
+
+<p>Aos dados foi aplicada a função log com objetivos distribuir melhor os valores e melhorar a visualização, já que os dados estavam um pouco enviezados a esquerda.</p>
+
+<h3 id="pca">PCA</h3>
+
+<p>Aplicando a abordagem PCA, podemos ver abaixo os valores de correlação a cada componente. No gráfico mais abaixo, as quatro dimensões foram reduziadas a duas. É possível observar a representação do autovetor de cada categoria e sua nova distrubuição de pontos, em que o objetivo é capturar o maior espalhamento possível nas duas dimensões.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">emendas.pca</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">prcomp</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">emendas.cp22</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">emendas.NOME_PARLAMENTAR</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">Estado</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">Regiao</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">center</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">scale.</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+
+</span><span class="n">print</span><span class="p">(</span><span class="n">emendas.pca</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Standard deviations:
+## [1] 1.3912932 1.1235846 0.8410541 0.3073905
+## 
+## Rotation:
+##                                PC1        PC2         PC3        PC4
+## emendas.Saneamento       0.5300252 -0.5733851  0.08354775 -0.6191305
+## emendas.Saúde            0.3305420  0.5499521  0.75687919 -0.1242116
+## emendas.Urbanismo        0.6911535 -0.1347162 -0.08833320  0.7045251
+## emendas.Gestão.Ambiental 0.3634861  0.5921433 -0.64214555 -0.3238722</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">autoplot</span><span class="p">(</span><span class="n">emendas.pca</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s2">"Estado"</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">emendas.cp22</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">loadings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">loadings.colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'blue'</span><span class="p">,</span><span class="w"> </span><span class="n">loadings.label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">loadings.label.size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" /></p>
+
+<p>Abaixo está um segundo gráfico que mostra quanto cada componente possui da variância total. Podemos concluir deste gráfico que os dois primeiros componentes são responsáveis por cerca de 80% da variância total, sendo assim, são os dois componentes escolhidos para representar o novo plano de duas dimensões, já que oferecem um maior espalhamento.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="w"> </span><span class="n">plot_pve</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">prout</span><span class="p">){</span><span class="w">
+   </span><span class="n">pr.var</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">emendas.pca</span><span class="o">$</span><span class="n">sdev</span><span class="o">^</span><span class="m">2</span><span class="w">
+   </span><span class="n">pve</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">pr.var</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">pr.var</span><span class="p">)</span><span class="w">
+   </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">NROW</span><span class="p">(</span><span class="n">pve</span><span class="p">),</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">cumsum</span><span class="p">(</span><span class="n">pve</span><span class="p">))</span><span class="w">
+   </span><span class="n">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+     </span><span class="n">geom_point</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+     </span><span class="n">geom_line</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+     </span><span class="n">labs</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">'Principal Component'</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Cumuative Proportion of Variance Explained'</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+ 
+ </span><span class="n">plot_pve</span><span class="p">(</span><span class="n">emendas.pca</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3" /></p>
+
+<h3 id="t-sne">t-SNE</h3>
+
+<p>A seguir, para as mesmas variáveis e dimensão, aplicaremos a segunda abordagem, t-SNE. É possível observar no gráfico gerado que alguns pontos se aproximam mais que outros, formando espécies de grupos. Devido a essa característica, escolherei o resultado dessa abordagem para interpretação.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">emendas.tsne</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rtsne</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">emendas.NOME_PARLAMENTAR</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">Estado</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">Regiao</span><span class="p">),</span><span class="w"> </span><span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">perplexity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Read the 40 x 4 data matrix successfully!
+## Using no_dims = 2, perplexity = 10.000000, and theta = 0.500000
+## Computing input similarities...
+## Normalizing input...
+## Building tree...
+##  - point 0 of 40
+## Done in 0.00 seconds (sparsity = 0.882500)!
+## Learning embedding...
+## Iteration 50: error is 56.582196 (50 iterations in 0.01 seconds)
+## Iteration 100: error is 57.559298 (50 iterations in 0.01 seconds)
+## Iteration 150: error is 59.105090 (50 iterations in 0.01 seconds)
+## Iteration 200: error is 53.785094 (50 iterations in 0.01 seconds)
+## Iteration 250: error is 57.400277 (50 iterations in 0.01 seconds)
+## Iteration 300: error is 1.515657 (50 iterations in 0.01 seconds)
+## Iteration 350: error is 0.968219 (50 iterations in 0.01 seconds)
+## Iteration 400: error is 0.670128 (50 iterations in 0.01 seconds)
+## Iteration 450: error is 0.417757 (50 iterations in 0.01 seconds)
+## Iteration 500: error is 0.350235 (50 iterations in 0.01 seconds)
+## Iteration 550: error is 0.329184 (50 iterations in 0.01 seconds)
+## Iteration 600: error is 0.307493 (50 iterations in 0.01 seconds)
+## Iteration 650: error is 0.293002 (50 iterations in 0.01 seconds)
+## Iteration 700: error is 0.287511 (50 iterations in 0.01 seconds)
+## Iteration 750: error is 0.280826 (50 iterations in 0.01 seconds)
+## Iteration 800: error is 0.240088 (50 iterations in 0.01 seconds)
+## Iteration 850: error is 0.242246 (50 iterations in 0.01 seconds)
+## Iteration 900: error is 0.235283 (50 iterations in 0.01 seconds)
+## Iteration 950: error is 0.233690 (50 iterations in 0.01 seconds)
+## Iteration 1000: error is 0.230780 (50 iterations in 0.01 seconds)
+## Fitting performed in 0.18 seconds.</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="w"> </span><span class="n">emendas.tsne</span><span class="o">$</span><span class="n">Y</span><span class="p">)</span><span class="w">
+ </span><span class="n">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">V</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">V</span><span class="m">2</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"darkgreen"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" /></p>
+
+<h3 id="interpretao">Interpretação</h3>
+
+<p>No gráfico resultante da metodologia  t-SNE é possível identificar cerca de 3-4 grupos principais de tamanhos semelhantes. Obersenvando os gráficos abaixo, agora com identificações de estados e regiões, pode-se notar que um dos grupos possuem apenas estados da região nordeste e centro-oeste, mais especificamente os estados PE, CE, GO e MS. Bem afastados desse primeiro, é possível notar outros grupos em que as regiões sul e sudeste aparecem com frequência e há uma diminuição na proporção daqueles identificados anteriormente. Estados da região norte quase não estão presentes e sempre que surgem, estão bem próximos de algum estado da região nordeste, assim como os estados do sul estão mais próximos aos do sudeste.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">df</span><span class="o">$</span><span class="n">Estado</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="o">$</span><span class="n">Estado</span><span class="w">
+
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">V</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">V</span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Estado</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"orange"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+      </span><span class="n">geom_text</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.7</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="n">hjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-.2</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" /></p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">df</span><span class="o">$</span><span class="n">Regiao</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="o">$</span><span class="n">Regiao</span><span class="w">
+
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">V</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">V</span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Regiao</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"brown"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+    </span><span class="n">geom_text</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.7</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="n">hjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-.2</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-6-2.png" alt="plot of chunk unnamed-chunk-6" /></p>
+
+  </article>
+
+</div>
+
+
+
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Análise de Dados 1</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>Análise de Dados 1</li>
+          <li><a href="mailto:martha.menezes@ccc.ufcg.edu.br">martha.menezes@ccc.ufcg.edu.br</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/michellymenezes">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">michellymenezes</span>
+            </a>
+          </li>
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Resultados dos laboratórios da disciplina.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
