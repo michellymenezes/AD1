@@ -45,7 +45,7 @@ print(emendas.pca)
 autoplot(emendas.pca, color="Estado", size = 3, data = emendas.cp22, label = F, loadings = TRUE, loadings.colour = 'blue', loadings.label = TRUE, loadings.label.size = 3)
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-2](/AD1figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-2-1.png)
+![plot of chunk unnamed-chunk-2](/AD1/figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-2-1.png)
 
 Abaixo está um segundo gráfico que mostra quanto cada componente possui da variância total. Podemos concluir deste gráfico que os dois primeiros componentes são responsáveis por cerca de 80% da variância total, sendo assim, são os dois componentes escolhidos para representar o novo plano de duas dimensões, já que oferecem um maior espalhamento.
 
@@ -64,7 +64,7 @@ Abaixo está um segundo gráfico que mostra quanto cada componente possui da var
  plot_pve(emendas.pca)
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-3](/AD1figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-3-1.png)
+![plot of chunk unnamed-chunk-3](/AD1/figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-3-1.png)
 
 ### t-SNE
 
@@ -120,7 +120,7 @@ emendas.tsne = Rtsne(select(cp, -emendas.NOME_PARLAMENTAR, -Estado, -Regiao), ve
   geom_point(alpha = 0.5, size = 3, color = "darkgreen")
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-5](/AD1figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-5](/AD1/figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-5-1.png)
 
 ### Interpretação
 
@@ -134,7 +134,7 @@ ggplot(df, aes(x = V1, y = V2, label = Estado)) +
       geom_text(alpha = .7, size = 4, hjust = -.2)
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-6](/AD1figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-6-1.png)
+![plot of chunk unnamed-chunk-6](/AD1/figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-6-1.png)
 
 {% highlight r %}
 df$Regiao = cp$Regiao
@@ -144,4 +144,4 @@ ggplot(df, aes(x = V1, y = V2, label = Regiao)) +
     geom_text(alpha = .7, size = 4, hjust = -.2)
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-6](/AD1figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-6-2.png)
+![plot of chunk unnamed-chunk-6](/AD1/figure/source/prob-3-checkpoint-2/2018-01-18-prob-3-checkpoint-2/unnamed-chunk-6-2.png)
