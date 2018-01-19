@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Prob 4 - Checkpoint 1</title>
+    <meta name="description" content="Resultados dos laboratórios da disciplina.
+">
+
+    <link rel="stylesheet" href="/AD1/css/main.css">
+    <link rel="canonical" href="http://yourdomain.com/AD1/2018/01/prob-4-checkpoint-1.html">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/AD1/">Análise de Dados 1</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/AD1/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Prob 4 - Checkpoint 1</h1>
+    <p class="post-meta">Jan 18, 2018</p>
+  </header>
+
+  <article class="post-content">
+    <h2 id="anlise-de-filmes">Análise de filmes</h2>
+
+<p>Para o checkpoint 1 do problema 4, nossa base de dados é referente a análise de filmes. Cada filme possui 0 ou mais caegorias, além de avaliações que variam de 1 a 5, em intervalos de 0,5.</p>
+
+<p>Para todas as análises deste docuemnto, foi escolhido utilizar o cálculo de medianas, já que não queremos que, se em poucos números, valores extremos afetem o resultado final.</p>
+
+<h3 id="parte-1">Parte 1</h3>
+
+<p>A primeira parte é destinada para avaliar uma trilogia e idenfificar qual dos episódios há melhor avaliação e para qual há mais variação nas notas atribuídas ao filme.</p>
+
+<p>A trilogia escolhida, composta de 3 filmes, foi Jurassic Park. No gráfico abaixo podemos ver como estão distribuídas as avaliações para cada filme. O eixo horizontal representa a nota atribuída e a altura que cada barra alcança no eixo vertical é referente a contagem de avaliações para uma dada nota.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">avaliacoes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.csv</span><span class="p">(</span><span class="s2">"ratings.csv"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">jp_movies</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">480</span><span class="p">,</span><span class="w"> </span><span class="m">1544</span><span class="p">,</span><span class="w"> </span><span class="m">4638</span><span class="p">)</span><span class="w">
+</span><span class="n">jp_names</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"Jurassic Park"</span><span class="p">,</span><span class="w"> </span><span class="s2">"The Lost World: Jurassic Park"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Jurassic Park III"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">jp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">subset</span><span class="p">(</span><span class="n">avaliacoes</span><span class="p">,</span><span class="w"> </span><span class="n">avaliacoes</span><span class="o">$</span><span class="n">movieId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">jp_movies</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">avaliacoes</span><span class="o">$</span><span class="n">movieId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">jp_movies</span><span class="p">[</span><span class="m">2</span><span class="p">]</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">avaliacoes</span><span class="o">$</span><span class="n">movieId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">jp_movies</span><span class="p">[</span><span class="m">3</span><span class="p">])</span><span class="w">
+
+</span><span class="n">jp</span><span class="p">[</span><span class="s2">"nome"</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kc">NA</span><span class="w">
+</span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">){</span><span class="w">
+  </span><span class="n">jp</span><span class="o">$</span><span class="n">nome</span><span class="p">[</span><span class="n">jp</span><span class="o">$</span><span class="n">movieId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">jp_movies</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">jp_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">jp</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">rating</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_histogram</span><span class="p">(</span><span class="n">binwidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">facet_grid</span><span class="p">(</span><span class="n">.</span><span class="w"> </span><span class="o">~</span><span class="w">
+    </span><span class="n">nome</span><span class="p">,</span><span class="w"> </span><span class="n">scales</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"free"</span><span class="p">,</span><span class="w"> </span><span class="n">space</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"free"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">labs</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">"Nota"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s2">"Quantidade de avaliações"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1/figure/source/prob-4-checkpoint-1/2018-01-18-prob-4-checkpoint-1/unnamed-chunk-1-1.png" alt="plot of chunk unnamed-chunk-1" /></p>
+
+<p>Com o objetivo de identificar o filme melhor avaliado, usaremos o processo Bootstrap. Ele consiste em permitir a inferências a partir de uma amostra, considerando intervalos e confinça. Dada uma amostra, elementos são selecionados da mesma aleatoreamente e então calcula-se a mediana. Esse processo é então repetido diversas vezes.</p>
+
+<p>Para cada filme foi aplicado o processo bootstrap e o valores obtidos das medianas são representados no gráfico abaixo. Interpretando, temos que a mediana da notas para <em>Jurassic Park</em> está no intervalo  de 3.5-4. De maneira análoga, a mediana de <em>Jurassic Park III</em> estará no intervalo 2-3 e de <em>The Lost Word: Jurassic Park</em> no intervalo 2.5-3.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">()</span><span class="w">
+
+</span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">jp_movies</span><span class="p">){</span><span class="w">
+  </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bootstrap</span><span class="p">(</span><span class="n">subset</span><span class="p">(</span><span class="n">jp</span><span class="p">,</span><span class="w"> </span><span class="n">movieId</span><span class="o">==</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">median</span><span class="p">(</span><span class="n">rating</span><span class="p">))</span><span class="w">
+  </span><span class="n">median.jp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CI.percentile</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">probs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">.025</span><span class="p">,</span><span class="w"> </span><span class="m">.975</span><span class="p">))</span><span class="w">
+  </span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">rbind</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">median.jp</span><span class="p">)))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">df</span><span class="o">$</span><span class="n">nome</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">jp_names</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">jp_names</span><span class="p">[</span><span class="m">2</span><span class="p">],</span><span class="w"> </span><span class="n">jp_names</span><span class="p">[</span><span class="m">3</span><span class="p">])</span><span class="w">
+
+</span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nome</span><span class="p">,</span><span class="w"> </span><span class="n">ymin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X</span><span class="m">2.5</span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">ymax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X</span><span class="m">97.5</span><span class="n">.</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_errorbar</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">labs</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">"Nome do filme"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s2">"Mediana"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1/figure/source/prob-4-checkpoint-1/2018-01-18-prob-4-checkpoint-1/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" /></p>
+
+<p>Como o filme <em>Jurassic Park</em> é o que tem a maior nota em sua faixa de valores e a mesma não é compartilhada com nenhum outro filme, podemos afirma que esse filme é o que possui melhor avaliação. O mesmo não podemos afirmar para os outros dois, já que, como a faixa de valores pertencente a cada um deles possuem valores em comum, não sabemos ao certo qual o exato valor das medianas, impossibilitando uma rápida comparação visual.</p>
+
+<p>Por outro lado, é possível observar que o filme <em>Jurassic Park III</em> possui uma maior variação em suas notas. Tiramos essa conclusão obersevando o tamanho da linha traçada e a quantidade de valores que seu intervalo inclui. Ao subtrair seus extremos temos uma diferença de 3 - 2 = 1, enquanto os outros filmes tem ambos uma diferença de 0.5.</p>
+
+<h3 id="parte-2">Parte 2</h3>
+
+<p>Na segunda parte temos o problema para avaliar relacionado a quantidade de gêneros que um filme possui. Queremos saber se filmes com uma determinada quantidade de gêneros recebem melhores avaliações.</p>
+
+<p>Para isso, primero reunimos em uma tabela todos os filmes, classificando-os pela quantidade de gêneros que cada um possui. Para cada filme também é calculada a mediana de suas avaliações. Para esta análise, descartamos todos os dados que não possuem gêneros ou avaliações. Ou seja, são considerados apenas aqueles com número de gêneros &gt;= 1 e mediana de avaliaçÕes &gt;= 1.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">movie.genre</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.csv</span><span class="p">(</span><span class="s2">"movie-genre.csv"</span><span class="p">)</span><span class="w">
+</span><span class="n">genre.median</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">movieId</span><span class="o">=</span><span class="n">numeric</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">n</span><span class="o">=</span><span class="n">numeric</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">mediana</span><span class="o">=</span><span class="n">numeric</span><span class="p">(</span><span class="m">0</span><span class="p">))</span><span class="w">
+
+
+</span><span class="k">for</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">149532</span><span class="p">){</span><span class="w">
+  </span><span class="c1">#se existir filme com id n
+</span><span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">nrow</span><span class="p">(</span><span class="w"> </span><span class="n">subset</span><span class="p">(</span><span class="n">movie.genre</span><span class="p">,</span><span class="w"> </span><span class="n">movieId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">){</span><span class="w">
+    
+    </span><span class="n">id</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w">
+    </span><span class="n">avaliacoes1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">subset</span><span class="p">(</span><span class="n">avaliacoes</span><span class="p">,</span><span class="w"> </span><span class="n">movieId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w">
+    </span><span class="c1">#se esse filme possui avaliacoes
+</span><span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">nrow</span><span class="p">(</span><span class="n">avaliacoes1</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">){</span><span class="w">
+      
+      </span><span class="c1"># se filme possui um gênero e é no genre
+</span><span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">movie.genre</span><span class="o">$</span><span class="n">genre</span><span class="p">[</span><span class="n">movie.genre</span><span class="o">$</span><span class="n">movieId</span><span class="o">==</span><span class="n">id</span><span class="p">])</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">movie.genre</span><span class="o">$</span><span class="n">genre</span><span class="p">[</span><span class="n">movie.genre</span><span class="o">$</span><span class="n">movieId</span><span class="o">==</span><span class="n">id</span><span class="p">]</span><span class="w">  </span><span class="o">==</span><span class="w"> </span><span class="s2">"(no genres listed)"</span><span class="p">){</span><span class="w">
+        </span><span class="n">v.n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+      </span><span class="k">else</span><span class="p">{</span><span class="w">
+          </span><span class="c1"># n é quantidade de gêneros
+</span><span class="w">          </span><span class="n">v.n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="n">movie.genre</span><span class="o">$</span><span class="n">movieId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">id</span><span class="p">))</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+      </span><span class="c1"># calcula mediana de avaliaçÕes do filme
+</span><span class="w">      </span><span class="n">v.mediana</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">median</span><span class="p">(</span><span class="n">avaliacoes1</span><span class="o">$</span><span class="n">rating</span><span class="p">)</span><span class="w">
+      </span><span class="c1"># adiciona na tabela
+</span><span class="w">      </span><span class="n">genre.median</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rbind</span><span class="p">(</span><span class="n">genre.median</span><span class="p">,</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">movieId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v.n</span><span class="p">,</span><span class="w"> </span><span class="n">mediana</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v.mediana</span><span class="p">))</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">str</span><span class="p">(</span><span class="n">genre.median</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## 'data.frame':	10325 obs. of  3 variables:
+##  $ movieId: num  1 2 3 4 5 6 7 8 9 10 ...
+##  $ n      : num  5 3 2 3 1 3 2 2 1 3 ...
+##  $ mediana: num  4 3 3 3 3 4 3 4 3 3.5 ...</code></pre></figure>
+
+<p>Assim como na parte 1, aplicamos o processo bootstrap nessa amostra também. Neste caso, por não conter dados suficientes, foi decidido descartar os casos em que o número de gêneros ultrapassa a quatidade 6. O resultado é um gráfico como o anterior, mas agora representando os intervalos com valores que as medianas podem assumir em cada grupo.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">()</span><span class="w">
+
+</span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">6</span><span class="p">){</span><span class="w">
+  </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bootstrap</span><span class="p">(</span><span class="n">subset</span><span class="p">(</span><span class="n">genre.median</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="o">==</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">median</span><span class="p">(</span><span class="n">mediana</span><span class="p">))</span><span class="w">
+  </span><span class="n">median.mv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CI.percentile</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">probs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">.025</span><span class="p">,</span><span class="w"> </span><span class="m">.975</span><span class="p">))</span><span class="w">
+  </span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">rbind</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">median.mv</span><span class="p">)))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">df</span><span class="o">$</span><span class="n">Generos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">5</span><span class="p">,</span><span class="m">6</span><span class="p">)</span><span class="w">
+
+</span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Generos</span><span class="p">,</span><span class="w"> </span><span class="n">ymin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X</span><span class="m">2.5</span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">ymax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X</span><span class="m">97.5</span><span class="n">.</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_errorbar</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">labs</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">"Quantidade de gêneros"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s2">"Mediana"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1/figure/source/prob-4-checkpoint-1/2018-01-18-prob-4-checkpoint-1/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" /></p>
+
+<p>A partir da análise visual e de valores do intervalos, é possível notar que alguns grupos tem comportamento igual. Os intervalos dos quatro últimos podem antingir como ponto máximo a mediana referente a 3.5. Porém, somente o grupo dos filmes de 5 gêneros possui um intervalo sem variação, chegando a conclusão que a mediana para este é sempre 3.5, enquanto para o outros ainda existe a possibilidade de assumir valores menores. Devido a esta observação, decidimos que filmes com classificados com 5 gêneros em geral recebem avaliações melhores.</p>
+
+<p>Para comparar o grupo recem selecionado como o de melhores avaliações com o que receber apenas uma avaliação, presisamos fazer o bootstrap da diferença de suas respectivas medianas. Então fazemos:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">b.diff.means</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bootstrap2</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subset</span><span class="p">(</span><span class="n">genre.median</span><span class="p">,</span><span class="w"> </span><span class="n">mediana</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">5</span><span class="p">)</span><span class="o">$</span><span class="n">mediana</span><span class="p">,</span><span class="w"> 
+                          </span><span class="n">data2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subset</span><span class="p">(</span><span class="n">genre.median</span><span class="p">,</span><span class="w"> </span><span class="n">mediana</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="o">$</span><span class="n">mediana</span><span class="p">,</span><span class="w"> 
+                          </span><span class="n">median</span><span class="p">)</span><span class="w">
+
+</span><span class="n">means.diff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CI.percentile</span><span class="p">(</span><span class="n">b.diff.means</span><span class="p">,</span><span class="w"> </span><span class="n">probs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">.025</span><span class="p">,</span><span class="w"> </span><span class="m">.975</span><span class="p">))</span><span class="w">
+
+</span><span class="n">means.diff</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1">##                     2.5% 97.5%
+</span><span class="err">##</span><span class="w"> </span><span class="n">median</span><span class="o">:</span><span class="w"> </span><span class="n">data</span><span class="o">-</span><span class="n">data2</span><span class="w">    </span><span class="m">4</span><span class="w">     </span><span class="m">4</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">data.frame</span><span class="p">(</span><span class="n">means.diff</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Diferença"</span><span class="p">,</span><span class="w"> </span><span class="n">ymin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X</span><span class="m">2.5</span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">ymax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X</span><span class="m">97.5</span><span class="n">.</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_errorbar</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.2</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/AD1/figure/source/prob-4-checkpoint-1/2018-01-18-prob-4-checkpoint-1/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" /></p>
+
+<p>Como o grupo 5 não possuía um intervalos propriamente tido, a direferença resultante tembém é semenlhante. O valor pode ser conferido no output acima.</p>
+
+  </article>
+
+</div>
+
+
+
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Análise de Dados 1</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>Análise de Dados 1</li>
+          <li><a href="mailto:martha.menezes@ccc.ufcg.edu.br">martha.menezes@ccc.ufcg.edu.br</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/michellymenezes">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">michellymenezes</span>
+            </a>
+          </li>
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Resultados dos laboratórios da disciplina.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
