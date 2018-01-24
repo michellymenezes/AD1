@@ -4,8 +4,10 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
+Esse é um portifolio com alguns exemplos que realizei enquanto cursava uma disciplina na universidade e aprendia um pouco sobre Análise Descritiva de Dados. Tudo foi realizado utilizando a linguagem R.
 
-You can find the source code for the Jekyll new theme at: [github.com/jglovier/jekyll-new](https://github.com/jglovier/jekyll-new)
+A disciplina foi Análise de Dados 1, ministrada pelo professor Nazareno Andrade.
 
-You can find the source code for Jekyll at [github.com/jekyll/jekyll](https://github.com/jekyll/jekyll)
+*This is a portfolio with some examples that I made while doing a subject in Uni and learning a bit of Descriptive Data Analysis. Everything was done by using the R language.*
+
+*The subject was Data Analysis 1 where the professor was Nazareno Andrade.*
